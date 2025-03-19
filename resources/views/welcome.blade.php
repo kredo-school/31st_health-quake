@@ -6,7 +6,7 @@
     <title>Health Quake</title>
     <style>
         body {
-            background-image: url('path/to/your/background.jpg'); /* 背景画像のパスを指定 */
+            background-image: url('images/background.jpg'); /* 背景画像のパスを指定 */
             background-size: cover;
             background-position: center;
             color: white;
@@ -28,7 +28,7 @@
 <body>
     <div class="container">
         <h1>Congratulations to all of you who have given up on a healthy lifestyle!</h1>
-        <img src="path/to/your/logo.png" alt="Health Quake Logo" class="logo"> <!-- ロゴ画像のパスを指定 -->
+        <img src="images/logo.png" alt="Health Quake Logo" class="logo"> <!-- ロゴ画像のパスを指定 -->
         <p>This app provides scientific support for human health habits. Using this app, you can develop good health habits with near 100% probability.</p>
     </div>
 </body>
