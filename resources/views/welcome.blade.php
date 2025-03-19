@@ -6,7 +6,7 @@
     <title>Health Quake</title>
     <style>
         body {
-            background-image: url('images/background.jpg'); /* 背景画像のパスを指定 */
+            background-image: url('images/background.png'); /* 背景画像のパスを指定 */
             background-size: cover;
             background-position: center;
             color: white;
