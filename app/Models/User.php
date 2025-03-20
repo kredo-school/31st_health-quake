@@ -4,6 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -44,5 +47,56 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * ユーザーのルーティンを取得
+     */
+    public function routines(): HasMany
+    {
+        return $this->hasMany(Routine::class);
+    }
+
+    /**
+     * ユーザーのタスクを取得
+     */
+    public function tasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'user_tasks')
+            ->withPivot(['order', 'points', 'scheduled_time', 'is_completed', 'last_completed_at', 'consecutive_days', 'completion_count'])
+            ->withTimestamps();
+    }
+
+    /**
+     * ユーザーのレベル情報を取得
+     */
+    public function userLevel(): HasOne
+    {
+        return $this->hasOne(UserLevel::class);
+    }
+
+    /**
+     * ユーザーのカレンダー記録を取得
+     */
+    public function calendars(): HasMany
+    {
+        return $this->hasMany(Calendar::class);
+    }
+
+    /**
+     * ユーザーのタスク進捗状況を取得
+     */
+    public function userTasks(): HasMany
+    {
+        return $this->hasMany(UserTask::class);
+    }
+
+    /**
+     * ユーザーの今日のタスク進捗状況を取得
+     */
+    public function todaysTasks()
+    {
+        return $this->userTasks()
+            ->whereDate('updated_at', now()->toDateString());
     }
 }
