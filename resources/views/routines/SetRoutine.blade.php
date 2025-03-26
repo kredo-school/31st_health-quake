@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>    set-routineでブラウザ上で調べればみれる --}}
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -12,9 +12,7 @@
     <div class="container-fluid">
         <!-- ヘッダー -->
         <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand" href="#">
-                <img src="https://via.placeholder.com/100?text=HEALTH+QUAKE" alt="Logo" class="logo">
-            </a>
+            <a class="navbar-brand" href="#"></a> <!-- ロゴを削除 -->
             <ul class="nav ml-auto">
                 <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Calendar</a></li>
@@ -50,29 +48,22 @@
             </div>
 
             <!-- Add Habit ボタン -->
-            <button class="btn btn-outline-secondary add-habit-btn">Add habit</button>
+            <a href="{{ route('add_habit') }}" class="btn btn-outline-secondary add-habit-btn">Add habits</a>
 
+            <h1>List Habits</h1>
             <!-- 習慣一覧 -->
             <div class="habit-cards">
                 <div class="habit-card card-blue">
-                    <img src="https://via.placeholder.com/200?text=Don't smoke" alt="Don't smoke" class="card-image">
-                    <h4 class="card-title">Don't smoke</h4>
-                    <button class="btn btn-primary card-tag">Health</button>
+
                 </div>
                 <div class="habit-card card-purple">
-                    <img src="https://via.placeholder.com/200?text=Glass of water" alt="Glass of water" class="card-image">
-                    <h4 class="card-title">Glass of water</h4>
-                    <button class="btn btn-secondary card-tag">Health</button>
+
                 </div>
                 <div class="habit-card card-green">
-                    <img src="https://via.placeholder.com/200?text=Get outside" alt="Get outside" class="card-image">
-                    <h4 class="card-title">Get outside</h4>
-                    <button class="btn btn-success card-tag">Adventure</button>
+
                 </div>
                 <div class="habit-card card-pink">
-                    <img src="https://via.placeholder.com/200?text=Morning exercise" alt="Morning exercise" class="card-image">
-                    <h4 class="card-title">Morning exercise</h4>
-                    <button class="btn btn-danger card-tag">Meditation</button>
+
                 </div>
             </div>
         </div>

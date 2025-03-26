@@ -56,13 +56,35 @@ body {
 .add-habit-btn {
     margin-top: 20px;
     margin-bottom: 20px;
+    width: 80%; /* ボタンの横幅を親要素の 80% にする */
+    max-width: 300px; /* 最大幅を指定してバランスを保つ */
+    padding: 10px 20px; /* 内部の余白を追加 */
+    font-size: 16px; /* フォントサイズを大きく */
+    text-align: center; /* テキストを中央揃えにする */
+    border-radius: 5px; /* 角を丸くする */
+    border: none; /* 枠線を削除 */
+    background-color: #007bff; /* 背景色を青に */
+    color: white; /* 文字色を白に */
+    cursor: pointer; /* マウスオーバー時にポインターを表示 */
+    transition: background-color 0.3s ease; /* クリック時のアニメーション効果 */
 }
 
-/* 習慣カード */
+.add-habit-btn:hover {
+    background-color: #0056b3; /* ホバー時の背景色を少し暗く */
+}
+
+/* グリッドレイアウト */
 .habit-cards {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr); /* 2 列に分割 */
+    gap: 20px; /* 各カード間にスペースを追加 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    min-height: 200px;
+    margin-bottom: 20px; /* 各カード間にマージンを追加 */
+    width: 100%; /* 幅を全幅にする */
 }
 
 .habit-card {
@@ -71,37 +93,32 @@ body {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    position: relative; /* 子要素の位置を相対的に指定するため */
 }
 
-.card-blue {
-    background-color: #BDE0FE;
+.card-icon {
+    position: relative; /* 絶対位置を解除し、通常フローに戻す */
+    margin: 0 auto; /* 横方向に中央揃え */
+    width: 100px; /* 画像の幅を大きく */
+    height: 100px; /* 画像の高さを大きく */
+    overflow: hidden; /* 余分な部分を隠す */
+    margin-bottom: 10px; /* 画像とテキストの間にスペースを追加 */
 }
 
-.card-purple {
-    background-color: #D6B3FE;
-}
-
-.card-green {
-    background-color: #CFF0D9;
-}
-
-.card-pink {
-    background-color: #FFD6DD;
-}
-
-.card-image {
+.icon-image {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    height: 100%;
+    object-fit: cover; /* 画像を親要素にフィットさせる */
 }
 
 .card-title {
+    margin-top: 0; /* 画像の下に直接配置するため、マージンをリセット */
     margin-bottom: 10px;
 }
 
 .card-tag {
-    font-size: 12px;
-    padding: 5px 10px;
+    font-size: 14px; /* フォントサイズを少し大きく */
+    padding: 8px 16px; /* ボタンのパディングを増やす */
+    border-radius: 5px; /* 角を丸く */
 }
+
