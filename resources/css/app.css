@@ -48,3 +48,108 @@ button {
 .terms a {
     color: #dc3545;
 }
+
+/* テール色の背景 */
+.bg-teal {
+    background-color: #87CEEB;
+}
+
+/* ロゴのサイズ調整 */
+.logo {
+    max-width: 200px;
+    height: auto;
+}
+
+/* フォームのタイトルと説明文 */
+h2 {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.author {
+    color: white; /* 白色に変更 */
+    font-size: 16px;
+    /* text-align: end; */
+    font-style: italic; /* イタリック体 */
+}
+
+.click{
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* ボタンのスタイル */
+.btn-success {
+    background-color: #28a745; /* 緑色 */
+    border-color: #28a745;
+}
+
+/* エラーメッセージのスタイル */
+.invalid-feedback {
+    display: block;
+    margin-top: 5px;
+    color: #dc3545;
+}
+
+/* リンクのスタイル */
+.terms a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* resources/css/app.css */
+
+/* ナビゲーションバー全体 */
+nav {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between; /* 左右を分離 */
+    align-items: center; /* 縦方向に揃える */
+}
+
+/* ロゴとアプリ名 */
+nav .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* ロゴとテキストの間隔 */
+}
+
+nav .logo-container img {
+    height: 30px; /* ロゴの高さ */
+}
+
+nav .logo-container .app-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* リンク一覧 */
+nav .links {
+    display: flex;
+    gap: 20px; /* 各リンクの間隔 */
+}
+
+nav .links a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+nav .links a:hover {
+    color: #28a745; /* クリック時の色変更 */
+}
+
+/* ユーザーアイコン */
+nav .user-icon {
+    position: relative;
+    cursor: pointer;
+}
+
+nav .user-icon img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* 丸形にする */
+    object-fit: cover; /* アイコン画像を適切に表示 */
+}

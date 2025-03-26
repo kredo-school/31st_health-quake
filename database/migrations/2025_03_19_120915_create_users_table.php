@@ -6,32 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
-    public function up()
-    {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->timestamps();
-        });
-    }
-
-    public function down()
-    {
-        Schema::dropIfExists('users');
-    }
-}
-
-return new class extends Migration
-{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // 主キー
+            $table->string('username')->unique(); // ユーザー名（一意）
+            $table->string('password'); // パスワード
+            $table->timestamps(); // created_at と updated_at
         });
     }
 
@@ -40,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('users'); // テーブル削除
     }
-};
+}
