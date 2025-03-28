@@ -53,18 +53,20 @@
             <h1>List Habits</h1>
             <!-- 習慣一覧 -->
             <div class="habit-cards">
-                <div class="habit-card card-blue">
-
+                @foreach($habits as $habit)
+                <div class="habit-card card-blue" data-habit-id="{{ $habit->id }}">
+                    <table>
+                        <tr>
+                            <td>{{ $habit->name }}</td>
+                            <td>{{ $habit->category }}</td>
+                            <td>{{ $habit->date }}</td>
+                        </tr>
+                    </table>
+                    <!-- 削除ボタン -->
+                    <button class="btn btn-danger delete-habit-btn" data-habit-id="{{ $habit->id }}">削除</button>
                 </div>
-                <div class="habit-card card-purple">
-
-                </div>
-                <div class="habit-card card-green">
-
-                </div>
-                <div class="habit-card card-pink">
-
-                </div>
+                @endforeach
+            </div>
             </div>
         </div>
     </div>
@@ -73,5 +75,45 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 削除ボタンを取得
+            const deleteButtons = document.querySelectorAll('.delete-habit-btn');
+
+            // 各削除ボタンにイベントリスナーを追加
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const habitId = this.getAttribute('data-habit-id'); // 習慣のIDを取得
+
+                    if (confirm('本当にこの習慣を削除しますか？')) {
+                        // APIにDELETEリクエストを送信
+                        fetch(`/api/habits/${habitId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${localStorage.getItem('token')}` // JWTトークン（認証用）
+                            }
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('習慣が削除されました');
+                                // UIから削除された習慣を即座に取り除く
+                                const habitCard = document.querySelector(`[data-habit-id="${habitId}"]`);
+                                if (habitCard) {
+                                    habitCard.remove();
+                                }
+                            } else {
+                                alert('削除に失敗しました');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('通信エラーが発生しました');
+                        });
+                    }
+                });
+            });
+        });
+        </script>
 </body>
 </html>
