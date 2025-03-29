@@ -18,7 +18,18 @@ class SettingsController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
+
+        // 名前とメールアドレスの更新
         $user->update($request->only('name', 'email'));
+
+        // アイコン画像のアップロード処理（必要に応じて追加）
+        if ($request->hasFile('profile_photo')) {
+            // アイコン画像の保存処理
+            $path = $request->file('profile_photo')->store('profile-photos', 'public'); // 'public'ディスクを使用
+            $user->profile_photo_path = $path; // データベースにパスを保存
+            $user->save();
+        }
+
         return redirect()->route('settings.profile')->with('success', 'プロフィールが更新されました。');
     }
 

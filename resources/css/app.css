@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 全体の背景色とフォント設定 */
 body {
-    background-color: #e6f7ff;
+    background-color: #D6F0F4; /* 水色 */
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -18,6 +19,7 @@ body {
 
 .logo {
     width: 200px; /* ロゴのサイズを調整 */
+    height: auto;
 }
 
 .form-group {
@@ -34,7 +36,7 @@ input[type="password"] {
 button {
     width: 200px;
     padding: 10px;
-    background-color: #28a745;
+    background-color: #28a745; /* 緑色 */
     color: white;
     border: none;
     cursor: pointer;
@@ -46,12 +48,13 @@ button {
 }
 
 .terms a {
-    color: #dc3545;
+    color: #007bff;
+    text-decoration: underline;
 }
 
 /* テール色の背景 */
 .bg-teal {
-    background-color: #87CEEB;
+    background-color: #D6F0F4; /* 水色 */
 }
 
 /* ロゴのサイズ調整 */
@@ -73,7 +76,7 @@ h2 {
     font-style: italic; /* イタリック体 */
 }
 
-.click{
+.click {
     color: #007bff;
     text-decoration: underline;
 }
@@ -97,23 +100,22 @@ h2 {
     text-decoration: underline;
 }
 
-/* resources/css/app.css */
-
 /* ナビゲーションバー全体 */
 nav {
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between; /* 左右を分離 */
-    align-items: center; /* 縦方向に揃える */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* 他の要素の上に表示 */
+    background-color: #00B4D8; /* 背景色を指定 */
 }
 
-/* ロゴとアプリ名 */
+ロゴとアプリ名
 nav .logo-container {
     display: flex;
+    flex-direction: column; /* 上下に並べる */
     align-items: center;
-    gap: 10px; /* ロゴとテキストの間隔 */
+    gap: 5px; /* ロゴとテキストの間隔 */
 }
 
 nav .logo-container img {
@@ -121,8 +123,10 @@ nav .logo-container img {
 }
 
 nav .logo-container .app-name {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
+    line-height: 1; /* 行間を詰める */
+    color: white; /* テキストの色 */
 }
 
 /* リンク一覧 */
@@ -133,7 +137,8 @@ nav .links {
 
 nav .links a {
     text-decoration: none;
-    color: #333;
+    color: white; /* リンクの色 */
+    font-size: 16px;
     transition: color 0.3s ease;
 }
 

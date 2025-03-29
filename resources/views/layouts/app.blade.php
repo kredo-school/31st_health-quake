@@ -6,22 +6,18 @@
     <title>{{ config('app.name', 'Health Quake') }}</title>
 
     <!-- Tailwind CSS -->
-    @vite('resources/css/app.css')
-    @yield('css')
+    @vite('resources/css/app.css') 
+    @yield('css') 
     <!-- カスタムスタイル -->
     <link rel="stylesheet" href="/css/register.css">
-</head>
-<body class="bg-teal font-sans antialiased h-screen flex items-center justify-center">
-
-     <!-- ナビゲーションバー -->
-     <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+    
+    <!-- ナビゲーションバー -->
+    <nav class="bg-white shadow-md p-4 flex justify-between items-center">
         <!-- 左側：ロゴとアプリ名 -->
         <div class="flex items-center space-x-2">
-            <img src="{{ asset('images/logo.png') }}" alt="Health Quake Logo" class="h-8">
-            <div>
-                <span class="text-xl font-bold">Health</span>
-                <span class="text-xl font-bold">Quake</span>
-            </div>
+            <img src="{{ asset('images/IMG_2624.png') }}" alt="Health Quake Logo" class="h-8">
+            <img src="{{ asset('images/IMG_2625.png') }}" alt="Health Quake Logo" class="h-6">
+            
         </div>
     
         <!-- 中央：リンク -->
@@ -31,15 +27,30 @@
             <a href="{{ route('ranking') }}" class="text-gray-600 hover:text-gray-800">Ranking</a>
         </div>
     
-        <!-- 右側：ユーザーアイコン -->
-        <div class="relative">
-            <button id="user-menu-button" type="button" class="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                <span class="sr-only">ユーザーメニューを開く</span>
-                <img class="h-8 w-8 rounded-full" src="{{ auth()->user()->profile_photo_url ?? asset('images/default-user-icon.png') }}" alt="{{ auth()->user()->name }}">
-            </button>
-        </div>
-    </nav>
+       <!-- 右側：ユーザーアイコン -->
+<div class="relative">
+    @if (auth()->check())
+        {{-- ログイン中の場合 --}}
+        <span class="sr-only">ユーザーメニューを開く</span>
+        <img class="rounded-full" src="{{ auth()->user()->profile_photo_url ?? asset('images/default-user-icon.png') }}" alt="{{ auth()->user()->name }}">
+        <!-- ログアウトリンク -->
+                    <!-- フォームを使用してログアウト処理を実行 -->
+                    <form method="POST" action="{{ route('logout') }}" class="inline-flex">
+                        @csrf
+                        <button type="submit" class="text-sm text-gray-600 hover:text-gray-800">Logout</button>
+                    </form>
     
+        @else
+        {{-- ログインしていない場合 --}}
+        <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-800">Log in</a>
+        &nbsp;|&nbsp;
+        <a href="{{ route('register') }}" class="text-gray-600 hover:text-gray-800">Register</a>
+    @endif
+</div>
+    </nav>
+</head>
+<body class="bg-teal font-sans antialiased h-screen flex items-center justify-center">
+
     <!-- メインコンテンツ -->
     <div class="container mx-auto px-4 text-center">
         <!-- ヘッダー（ロゴ） -->
