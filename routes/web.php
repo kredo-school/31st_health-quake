@@ -7,6 +7,7 @@ use App\Http\Controllers\UserLevelController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HabitController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
 
 // 習慣設定画面（追加フォーム）
 Route::get('/add_habit', function () {
@@ -60,4 +61,7 @@ Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.in
 Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show')->middleware('auth');
 
 
+
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register']);
 
