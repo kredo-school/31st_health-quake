@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\HabitController;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,15 @@ use App\Http\Controllers\HabitController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-    use App\Http\Controllers\HabitController;
+// 認証が必要なルート
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-// 削除エンドポイント
-Route::delete('/habits/{id}', [HabitController::class, 'destroy']);
+    // 削除エンドポイント
+    Route::delete('/habits/{id}', [HabitController::class, 'destroy']);
 });
+
+// 認証不要なルート
+Route::get('/tasks/{year}/{month}', [TaskController::class, 'getTasks']);

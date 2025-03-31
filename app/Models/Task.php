@@ -24,6 +24,7 @@ class Task extends Model
         'has_timer',
         'timer_duration',
         'benefits',
+        'title', 'date',
     ];
 
     /**

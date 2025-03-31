@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Calendar</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Calendar App</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ asset('css/calendar.css') }}">
 </head>
 <body>
     <div class="calendar-container">
@@ -41,6 +42,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- JavaScript -->
+    <script src="{{ asset('js/calendar.js') }}"></script>
 </body>
 </html>
