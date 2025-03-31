@@ -5,6 +5,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\RoutineController;
 use App\Http\Controllers\UserLevelController;
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Auth;
 
 // トップページは未ログインならウェルカムページ、ログイン済みならダッシュボードに
@@ -46,3 +47,9 @@ Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-leve
 // カレンダー
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index')->middleware('auth');
 Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show')->middleware('auth');
+=======
+use App\Http\Controllers\Auth\RegisterController;
+
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register']);
+>>>>>>> 6211f9adb0f2e1fdbfd3e6f01baa3e2e919c0b9e
