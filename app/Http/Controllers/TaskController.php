@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
+    public function getTasks($year, $month)
+    {
+        // データベースから該当する年月のタスクを取得
+        $tasks = Task::whereYear('date', $year)
+                     ->whereMonth('date', $month)
+                     ->get();
+
+        // JSON形式でレスポンスを返す
+        return response()->json($tasks);
+    }
     /**
      * コンストラクタ - 認証チェック
      */

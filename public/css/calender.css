@@ -1,0 +1,89 @@
+/* 全体のスタイル */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff; /* 淡い青色 */
+    margin: 0;
+    padding: 0;
+}
+
+.calendar-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #e8f5e9; /* 背景色 */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ヘッダー */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#current-month {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.controls button {
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* 曜日ラベル */
+.weekdays {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.weekdays span {
+    font-size: 14px;
+    text-align: center;
+    width: calc(100% / 7);
+}
+
+/* カレンダーセル */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-grid .day-cell {
+    height: 80px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.calendar-grid .day-cell.selected {
+    background-color: #e0e0e0;
+}
+
+/* 右上のタスクアイコン一覧 */
+.task-icons {
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-icons .icon-box {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+}
