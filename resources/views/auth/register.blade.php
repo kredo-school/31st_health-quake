@@ -24,14 +24,6 @@
                             </span>
                         @enderror
 
-                        {{-- <!-- Email -->
-                        <input id="email" type="text" class="form-control mb-3 @error('email') is-invalid @enderror" name="email" placeholder="email" value="{{ old('email') }}" required autofocus>
-                        @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror --}}
-
                         <!-- パスワード -->
                         <input id="password" type="password" class="form-control mb-3 @error('password') is-invalid @enderror" name="password" placeholder="password" required>
                         @error('password')
@@ -43,8 +35,8 @@
                         <!-- パスワード確認 -->
                         <input id="password-confirm" type="password" class="form-control mb-3" name="password_confirmation" placeholder="password-confirm" required>
 
-                        {{-- <!-- プロフィール画像 -->
-                        <input id="profile_picture" type="text" class="form-control mb-3" name="profile_picture" placeholder="select photo | set your profile icon" value="{{ old('profile_picture') }}"> --}}
+                        <!-- プロフィール画像 -->
+                        <input id="profile_picture" type="text" class="form-control mb-3" name="profile_picture" placeholder="select photo | set your profile icon" value="{{ old('profile_picture') }}">
 
                         <!-- 登録ボタン -->
                         <button type="submit" class="btn btn-success w-100">Sign up</button>
