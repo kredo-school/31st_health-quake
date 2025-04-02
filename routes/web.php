@@ -31,6 +31,7 @@ Route::get('/', function () {
 });
 Route::get('/habits/{id}', [HabitController::class, 'destroy'])->name('delete-habit');
 
+
 // 認証ルート
 Auth::routes();
 
