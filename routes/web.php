@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HabitController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\RankingController;
 
 // 習慣設定画面（追加フォーム）
 Route::get('/add_habit', function () {
@@ -66,3 +67,4 @@ Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calen
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
 
+Route::get('/ranking', [RankingController::class, 'index']);
