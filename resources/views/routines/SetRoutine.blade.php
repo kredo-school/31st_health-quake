@@ -1,46 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Calendar</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- CSRF トークン用 meta タグ -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Habit Settings</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/SetRoutine.css">
 </head>
+
 <body>
-    <div class="calendar-container">
+
+    <div class="container-fluid">
+
         <!-- ヘッダー -->
-        <div class="calendar-header">
-            <h2>habits history <span id="current-month">March</span></h2>
-            <div class="controls">
-                <button id="prev-month"><</button>
-                <button id="next-month">></button>
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="#"></a> <!-- ロゴを削除 -->
+            <ul class="nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Calendar</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Task</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Ranking</a></li>
+            </ul>
+            <img src="https://via.placeholder.com/50?text=User" alt="User Icon" class="user-icon">
+        </nav>
+
+        <!-- メインコンテンツ -->
+        <div class="content">
+
+            <!-- 日付選択 -->
+            <div class="date-selector">
+                <h3>December, 2025</h3>
+                <div class="days">
+                    <span class="day">Mon</span>
+                    <span class="day">Tue</span>
+                    <span class="day">Wed</span>
+                    <span class="day">Thu</span>
+                    <span class="day">Fri</span>
+                    <span class="day">Sat</span>
+                    <span class="day">Sun</span>
+                </div>
+                <div class="numbers">
+                    <span class="number">8</span>
+                    <span class="number active">9</span>
+                    <span class="number">10</span>
+                    <span class="number">11</span>
+                    <span class="number">12</span>
+                    <span class="number">13</span>
+                    <span class="number">14</span>
+                </div>
             </div>
-        </div>
 
-        <!-- 曜日ラベル -->
-        <div class="weekdays">
-            <span>SUN</span>
-            <span>MON</span>
-            <span>TUE</span>
-            <span>WED</span>
-            <span>THU</span>
-            <span>FRI</span>
-            <span>SAT</span>
-        </div>
+            <!-- Add Habit ボタン -->
+            <a href="{{ route('add_habit') }}" class="btn btn-outline-secondary add-habit-btn">Add habits</a>
 
-        <!-- 日付セル -->
-        <div class="calendar-grid" id="calendar-grid"></div>
+            <h1>List Habits</h1>
 
-        <!-- 右上のタスクアイコン一覧 -->
-        <div class="task-icons">
-            <div class="icon-box" style="background-color: #4CAF50;"></div>
-            <div class="icon-box" style="background-color: #FF9800;"></div>
-            <div class="icon-box" style="background-color: #2196F3;"></div>
-            <div class="icon-box" style="background-color: #FFC107;"></div>
-            <div class="icon-box" style="background-color: #9C27B0;"></div>
+            <!-- 習慣一覧 -->
+            <div class="habit-cards">
+                @foreach($habits as $habit)
+                <div class="habit-card card-blue" data-habit-id="{{ $habit->id }}">
+                    <table>
+                        <tr>
+                            <td>{{ $habit->name }}</td>
+                            <td>{{ $habit->category }}</td>
+                            <td>{{ $habit->date }}</td>
+                        </tr>
+                    </table>
+                    <!-- 削除ボタン -->
+                    <a href="{{ route('delete-habit',['id'=>$habit->id]) }}" class="btn btn-danger delete-habit-btn" data-habit-id="{{ $habit->id }}">削除</a>
+                </div>
+                @endforeach
+            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+
+
 </body>
+
 </html>
