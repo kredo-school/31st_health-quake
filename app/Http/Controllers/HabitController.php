@@ -1,96 +1,82 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Habit;
+
 class HabitController extends Controller
 {
+    /**
+     * Delete the authenticated user's habit
+     */
     public function destroy($id)
     {
-        // 認証済みユーザーを取得
-        $user = Auth::user()->id;
+        // Get the authenticated user's ID
+        $user = Auth::id();
 
-        // 該当の習慣を検索
-        $habit = Habit::where('id', $id)->where('user_id', $user)->first();
+        // Search for the corresponding habit
+        $habit = Habit::where('id', $id)
+            ->where('user_id', $user)
+            ->first();
+
         if (!$habit) {
-            return redirect()->route('set-routine')->with('error', 'Habit not found or you do not have permission to delete this habit');
+            // Return error message if habit not found or unauthorized
+            return redirect()->route('set-routine')
+                ->with('error', 'Habit not found or you do not have permission to delete this habit');
         }
-        // 習慣を削除
+
+        // Delete the habit
         $habit->delete();
-        return redirect()->route('set-routine')->with('success', 'Habit deleted successfully');
+
+        // Redirect with success message
+        return redirect()->route('set-routine')
+            ->with('success', 'Habit has been deleted');
     }
+
     /**
-     * 常に最新の4つの習慣を取得して表示S
+     * Display the latest 4 habits
      */
     public function index()
     {
-        // 最新の4件の習慣を取得
-        $habits = Habit::where('user_id', auth()->id()) // ログイン中のユーザーのみの習慣を取得
-            ->orderBy('created_at', 'desc')
+        // Retrieve latest 4 habits for the authenticated user
+        $habits = Auth::user()->habits()
+            ->latest()
             ->take(4)
             ->get();
-        // ビューに渡す
+
+        // Pass habits to the view
         return view('routines.SetRoutine', compact('habits'));
     }
+
     /**
-     * 習慣を保存
+     * Save a new habit
      */
     public function store(Request $request)
     {
-
-        // バリデーション
+        // Validation
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'date' => 'required|date',
         ]);
-        // 現在の認証ユーザーのIDを追加
-        $validatedData['user_id'] = Auth::user()->id;
-        // 常習を保存
+
+        // Check habit count before saving
+        $currentHabitsCount = Auth::user()->habits()->count();
+
+        if ($currentHabitsCount >= 3) {
+            return redirect()->back()
+                ->withErrors(['error' => 'You can only set up to 3 habits.'])
+                ->withInput();
+        }
+
+        // Assign user_id and save
+        $validatedData['user_id'] = Auth::id();
         Habit::create($validatedData);
-        // 成功メッセージをセッションに保存
-        session()->flash('success', 'Habit has been saved successfully.');
-        // 一覧画面に戻る
-        return redirect()->route('set-routine');
+
+        // Redirect with success message
+        return redirect()->route('set-routine')
+            ->with('success', 'Habit has been saved successfully.');
     }
 }
-
-// namespace App\Http\Controllers;
-
-// use Illuminate\Http\Request;
-// use App\Models\Habit;
-
-// class HabitController extends Controller
-// {
-//     /**
-//      * 常に最新の4つの習慣を取得して表示
-//      */
-//     public function index()
-//     {
-//         // 最新の4件の習慣を取得
-//         $habits = Habit::orderBy('created_at', 'desc')->take(4)->get();
-
-//         // ビューに渡す
-//         return view('routines.SetRoutine', compact('habits'));
-//     }
-
-//     /**
-//      * 常習を保存
-//      */
-//     public function store(Request $request)
-//     {
-//         // バリデーション
-//         $validatedData = $request->validate([
-//             'name' => 'required|string|max:255',
-//             'category' => 'required|string|max:255',
-//             'date' => 'required|date',
-//         ]);
-//         // 現在の認証ユーザーのIDを追加
-//         $validatedData['user_id'] = auth()->id();
-//         // 常習を保存
-//         Habit::create($validatedData);
-//         // 成功メッセージをセッションに保存
-//         session()->flash('success', 'Habit has been saved successfully.');
-//         // 一覧画面に戻る
-//         return redirect()->route('set-routine');
-//     }

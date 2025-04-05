@@ -98,6 +98,11 @@ class User extends Authenticatable
         $this->save();
         Log::info("[$this->username] Saved user data successfully.");
     }
+    // app/Models/User.php
+        public function habits()
+        {
+            return $this->hasMany(Habit::class);
+        }
 
     /**
      * ユーザーのルーティンを取得
