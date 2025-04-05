@@ -19,7 +19,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard'; // ログイン後に遷移するパスを /dashboard に変更
+    protected $redirectTo = '/home'; // ログイン後に遷移するパスを /dashboard に変更
 
     /**
      * 認証に使用するカラムを指定（デフォルトは'email'）

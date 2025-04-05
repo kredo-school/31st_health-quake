@@ -35,9 +35,9 @@ Route::get('/', function () {
  * 認証済みユーザーのみがアクセスできます。
  * middleware(['auth', 'verified']) は、ログイン済みかつメール認証済みのユーザーのみ許可します。
  */
-Route::get('/dashboard', function () {
+Route::get('/home', function () {
     return view('welcome_login'); // resources/views/welcome_login.blade.php を表示
-})->middleware(['auth', 'verified'])->name('dashboard'); // ルート名を 'dashboard' として定義
+})->middleware(['auth', 'verified'])->name('home'); // ルート名を 'home' として定義
 
 /**
  * 認証済みユーザー向けのルートグループ
@@ -87,7 +87,7 @@ Route::get('/set-routine', [HabitController::class, 'index'])->name('set-routine
 // トップページ（ログイン状態による振り分け）
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('home');
     }
     return view('welcome');
 });
@@ -112,24 +112,21 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
  * 新規登録ページ
  * 新規ユーザー登録フォームを表示するためのルートです。
  */
-Route::get('/register', function () {
-    return view('register'); // resources/views/register.blade.php を表示
-})->name('register'); // ルート名を 'register' として定義
+// Route::get('/register', function () {
+//     return view('register'); // resources/views/register.blade.php を表示
+// })->name('register'); // ルート名を 'register' として定義
 
 
-
-
-/**
- * タスクカレンダーページ
- * タスク管理用のカレンダーを表示するためのルートです。
- */
-Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+// // registerのページ
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('registernew', [RegisterController::class, 'store'])->name('registernew');
 
 /**
  * ランキングリストページ
  * ユーザーのランキングを表示するためのルートです。
  */
 Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
+
 
 /**
  * プロフィール設定ページ
@@ -154,8 +151,8 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post'); //
 // 認証ルート
 Auth::routes();
 
-// ダッシュボード
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+// ダッシュボード:Rei_dashboard→Makoto_homeに統一
+// Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 Route::get('/api/tasks/{year}/{month}', [TaskController::class, 'getTasks']);
 
@@ -179,8 +176,3 @@ Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-leve
 // カレンダー
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index')->middleware('auth');
 Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show')->middleware('auth');
-
-
-
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);

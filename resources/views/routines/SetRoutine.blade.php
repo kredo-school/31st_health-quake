@@ -1,86 +1,51 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Settings</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/SetRoutine.css">
-</head>
-<body>
-    <div class="container-fluid">
-        <!-- ヘッダー -->
-        <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand" href="#">
-                <img src="https://via.placeholder.com/100?text=HEALTH+QUAKE" alt="Logo" class="logo">
-            </a>
-            <ul class="nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Calendar</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Task</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Ranking</a></li>
-            </ul>
-            <img src="https://via.placeholder.com/50?text=User" alt="User Icon" class="user-icon">
-        </nav>
+@extends('layouts.app')
 
-        <!-- メインコンテンツ -->
-        <div class="content">
-            <!-- 日付選択 -->
-            <div class="date-selector">
-                <h3>December, 2025</h3>
-                <div class="days">
-                    <span class="day">Mon</span>
-                    <span class="day">Tue</span>
-                    <span class="day">Wed</span>
-                    <span class="day">Thu</span>
-                    <span class="day">Fri</span>
-                    <span class="day">Sat</span>
-                    <span class="day">Sun</span>
+@section('content')
+<div class="container mx-auto px-4 pt-24">
+    <!-- 日付選択 -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4 text-center">December, 2025</h3>
+        <div class="grid grid-cols-7 gap-2 justify-items-center">
+            @foreach(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $day)
+                <div class="text-gray-500 text-xs mb-1">{{ $day }}</div>
+            @endforeach
+            @for($i = 1; $i <= 7; $i++)
+                <div class="p-2 rounded w-16 h-16 flex flex-col items-center justify-center">
+                    <span class="text-sm">{{ $i }}</span>
+                    @if($i == 3)
+                        <div class="w-4 h-4 bg-green-500 rounded-full mt-1"></div>
+                    @endif
                 </div>
-                <div class="numbers">
-                    <span class="number">8</span>
-                    <span class="number active">9</span>
-                    <span class="number">10</span>
-                    <span class="number">11</span>
-                    <span class="number">12</span>
-                    <span class="number">13</span>
-                    <span class="number">14</span>
-                </div>
-            </div>
-
-            <!-- Add Habit ボタン -->
-            <button class="btn btn-outline-secondary add-habit-btn">Add habit</button>
-
-            <!-- 習慣一覧 -->
-            <div class="habit-cards">
-                <div class="habit-card card-blue">
-                    <img src="https://via.placeholder.com/200?text=Don't smoke" alt="Don't smoke" class="card-image">
-                    <h4 class="card-title">Don't smoke</h4>
-                    <button class="btn btn-primary card-tag">Health</button>
-                </div>
-                <div class="habit-card card-purple">
-                    <img src="https://via.placeholder.com/200?text=Glass of water" alt="Glass of water" class="card-image">
-                    <h4 class="card-title">Glass of water</h4>
-                    <button class="btn btn-secondary card-tag">Health</button>
-                </div>
-                <div class="habit-card card-green">
-                    <img src="https://via.placeholder.com/200?text=Get outside" alt="Get outside" class="card-image">
-                    <h4 class="card-title">Get outside</h4>
-                    <button class="btn btn-success card-tag">Adventure</button>
-                </div>
-                <div class="habit-card card-pink">
-                    <img src="https://via.placeholder.com/200?text=Morning exercise" alt="Morning exercise" class="card-image">
-                    <h4 class="card-title">Morning exercise</h4>
-                    <button class="btn btn-danger card-tag">Meditation</button>
-                </div>
-            </div>
+            @endfor
         </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+    <!-- Add Habit ボタン -->
+    <a href="{{ route('add_habit') }}" 
+       class="inline-block mb-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200 mx-auto block"
+    >
+        Add habits
+    </a>
+
+    <h1 class="text-3xl font-bold mb-6 text-center">List Habits</h1>
+
+    <!-- 習慣一覧 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        @foreach($habits as $habit)
+        <div class="bg-white p-4 rounded-lg shadow-md max-w-sm mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <p class="text-lg font-semibold">{{ $habit->name }}</p>
+                    <p class="text-sm text-gray-500">{{ $habit->category }} {{ $habit->date }}</p>
+                </div>
+    <!-- 削除ボタンの安全設計 -->
+                <button type="button" 
+                        class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                        onclick="confirmDelete({{ $habit->id }})"
+                >Delete</button>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endsection
