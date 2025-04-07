@@ -10,7 +10,7 @@ class CalendarController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); // 認証が必要なメソッドに適用
+        $this->middleware('auth'); // 認証が必要なメソッドに適用xxx
     }
 
     public function index()
