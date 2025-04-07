@@ -28,6 +28,6 @@ class CalendarController extends Controller
             ->get();
 
         // ビューに渡す
-        return view('routines.SetRoutine', compact('habits'));
+        return view('calendar', compact('habits'));
     }
 }

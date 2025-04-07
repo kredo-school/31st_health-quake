@@ -1,70 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 全体のスタイル */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e6f7ff;
+            /* 軽い青色の背景 */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ヘッダー部分 */
+        header {
+            background-color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .logo span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* メインコンテンツ */
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .rank-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .rank-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .rank-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .rank-points {
+            font-size: 14px;
+            color: #666;
+            margin-left: auto;
+        }
+
+        /* ユーザーの現在位置を示すマーク */
+        .user-position {
+            position: relative;
+            margin-top: -20px;
+            margin-left: 20px;
+        }
+
+        .user-position::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -20px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 0 10px 20px;
+            border-color: transparent transparent transparent #ffcc00;
+            /* 黄色の三角形 */
+        }
+
+        .user-position span {
+            font-size: 14px;
+            color: #666;
+            margin-left: 10px;
+        }
+    </style>
 </head>
-<body class="bg-blue-100 m-0 p-0 font-sans">
-    <!-- Headder -->
-    <header class="bg-white p-4 flex justify-between items-center">
-        <div class="flex items-center">
-            <img src="https://via.placeholder.com/50" alt="Logo" class="w-12 h-12 mr-2">
-            <span class="font-bold text-gray-800">HEALTH QUAKE</span>
+
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <div class="logo">
+            <img src="https://via.placeholder.com/50" alt="Logo">
+            <span>HEALTH QUAKE</span>
         </div>
         <nav>
-            <ul class="flex space-x-5 list-none m-0 p-0">
-                <li><a href="#" class="text-gray-800 font-bold">Home</a></li>
-                <li><a href="#" class="text-gray-800 font-bold">Calendar</a></li>
-                <li><a href="#" class="text-gray-800 font-bold">Task</a></li>
-                <li><a href="#" class="text-gray-800 font-bold">Ranking</a></li>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Calendar</a></li>
+                <li><a href="#">Task</a></li>
+                <li><a href="#">Ranking</a></li>
             </ul>
         </nav>
-        <div class="w-12 h-12 rounded-full overflow-hidden">
-            <img src="https://via.placeholder.com/50" alt="Profile" class="w-full h-full object-cover">
+        <div class="profile">
+            <img src="https://via.placeholder.com/50" alt="Profile" style="border-radius: 50%;">
         </div>
     </header>
-    <!-- Main contents -->
-    <main class="max-w-3xl mx-auto p-5">
+
+    <!-- メインコンテンツ -->
+    <main>
         @foreach ($ranks as $rank)
-            <div class="flex items-center bg-white rounded-lg shadow-md p-4 mb-4">
-                <img src="{{ $rank['avatar'] }}" alt="{{ $rank['name'] }}" class="w-12 h-12 rounded-full object-cover mr-4">
+            <div class="rank-item">
+                <img src="{{ $rank['avatar'] }}" alt="{{ $rank['name'] }}">
                 <div>
-                    <span class="text-xl font-bold text-gray-800 mr-2">#{{ $rank['position'] }}</span>
-                    <span class="text-lg font-bold text-gray-800">{{ $rank['name'] }}</span>
+                    <span class="rank-number">#{{ $rank['position'] }}</span>
+                    <span class="rank-name">{{ $rank['name'] }}</span>
                 </div>
-                <span class="text-sm text-gray-600 ml-auto">{{ $rank['points'] }} points</span>
+                <span class="rank-points">{{ $rank['points'] }} points</span>
                 @if ($loop->iteration === 4)
-                    <!-- Mark the fourth element as an example -->
-                    <div class="relative ml-5 -mt-5">
-                        <span class="text-sm text-gray-600 ml-3">You are here</span>
-                        <div class="absolute top-1/2 left-[-20px] transform -translate-y-1/2 w-0 h-0 border-solid border-l-8 border-t-8 border-b-8 border-transparent border-t-yellow-500"></div>
+                    <!-- 例として4番目の要素にマークを付ける -->
+                    <div class="user-position">
+                        <span>You are here</span>
                     </div>
                 @endif
             </div>
         @endforeach
     </main>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

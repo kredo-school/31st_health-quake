@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Habit extends Model
+class Reward extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'category',
-        'date',
+        'title',
+        'description',
+        'level',
+        'image',
         'user_id'
     ];
 
     /**
-     * この習慣を所有するユーザーを取得
+     * この報酬を所有するユーザーを取得
      */
     public function user()
     {

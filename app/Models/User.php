@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Reward;
+use App\Models\UserTask; // UserTaskモデルもインポート（必要な場合）
 
 class User extends Authenticatable
 {
@@ -99,4 +101,19 @@ class User extends Authenticatable
         return $this->userTasks()
             ->whereDate('updated_at', now()->toDateString());
     }
+    /**
+ * ユーザーが持つ報酬を取得
+ */
+public function rewards()
+{
+    return $this->hasMany(Reward::class);
+}
+/**
+ * ユーザーの習慣を取得
+ */
+public function habits(): HasMany
+{
+    return $this->hasMany(Habit::class);
+}
+
 }
