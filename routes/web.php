@@ -164,3 +164,23 @@ Route::post('registernew', [RegisterController::class, 'store'])->name('register
  * API: タスクデータ取得
  */
 Route::get('/api/tasks/{year}/{month}', [TaskController::class, 'getTasks']);
+
+// Timer
+
+use App\Http\Controllers\TimerController;
+
+Route::get('/timer/start', [TimerController::class, 'index'])->name('timer.start');
+Route::get('/timer', [TimerController::class, 'show'])->name('timer.show');
+Route::post('/timer/stop', [TimerController::class, 'stopTimer'])->name('timer.stop');
+Route::post('/timer/restart', [TimerController::class, 'restartTimer'])->name('timer.restart');
+Route::post('/set-routine', [TimerController::class, 'quitTasks'])->name('set-routine.quit');
+
+use App\Http\Controllers\RewardsController;
+
+// 報酬関連ルート
+Route::get('/set-rewards', [RewardsController::class, 'index'])->name('rewards.index');
+Route::post('/set-rewards', [RewardsController::class, 'store'])->name('rewards.store');
+Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('rewards.edit');
+Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
+Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
+

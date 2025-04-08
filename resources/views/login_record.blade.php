@@ -19,5 +19,12 @@
             {{ $penaltyMessage }}
         </div>
     @endif
+
+    <!-- 「Let's set the Bonus」ボタン -->
+    <div class="mt-8 text-center">
+        <a href="{{ route('rewards.index') }}" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-md shadow-md transition-all inline-block">
+            SET YOUR BONUS
+        </a>
+    </div>
 </div>
 @endsection

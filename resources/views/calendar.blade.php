@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-{{-- @section('content') --}}
+@section('content')
 <div class="calendar-container">
     <!-- ヘッダー -->
     <div class="calendar-header">
@@ -43,3 +43,6 @@
 @push('scripts')
     <script src="{{ asset('js/calendar.js') }}"></script>
 @endpush
+
+
+@endsection

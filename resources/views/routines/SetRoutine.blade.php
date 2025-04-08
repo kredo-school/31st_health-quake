@@ -60,14 +60,13 @@
                             <a href="{{ route('delete-habit', ['id' => $habit->id]) }}" 
                                class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
                             >
-                                Delete <!-- 削除ボタン -->
+                                Delete
                             </a>
                             <!-- START ボタン -->
-                            <a href="#" 
-                               class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
-                            >
-                                START <!-- START ボタン -->
-                            </a>
+                                <a href="/timer/start?duration={{ $habit->duration }}"
+                                    class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition">
+                                    START
+                                </a>
                         </div>
                     </div>
                 </div>
