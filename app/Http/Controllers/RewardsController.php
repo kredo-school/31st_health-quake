@@ -37,7 +37,7 @@ class RewardsController extends Controller
         }
 
         // ユーザーの現在の報酬数をチェック
-        $rewardCount = Auth::user()->rewards()->count();
+        $rewardCount = Auth::user()->rewards->count();
         if ($rewardCount >= 3) {
             return redirect()->route('rewards.index')->with('error', '報酬は最大3つまでしか設定できません');
         }
@@ -58,7 +58,7 @@ class RewardsController extends Controller
         }
 
         // ユーザーに関連付けた報酬をデータベースに保存
-        Auth::user()->rewards()->create([
+        Auth::user()->rewards->create([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'level' => $validated['level'],
@@ -79,7 +79,7 @@ class RewardsController extends Controller
         }
 
         // 現在ログインしているユーザーに関連する報酬を取得
-        $reward = Auth::user()->rewards()->findOrFail($id);
+        $reward = Auth::user()->rewards->findOrFail($id);
 
         // 編集フォームを表示
         return view('edit-reward', compact('reward'));
@@ -96,7 +96,7 @@ class RewardsController extends Controller
         }
 
         // 現在ログインしているユーザーに関連する報酬を取得
-        $reward = Auth::user()->rewards()->findOrFail($id);
+        $reward = Auth::user()->rewards->findOrFail($id);
 
         // 入力値のバリデーション
         $validated = $request->validate([
@@ -140,7 +140,7 @@ class RewardsController extends Controller
         }
 
         // 現在ログインしているユーザーに関連する報酬を取得
-        $reward = Auth::user()->rewards()->findOrFail($id);
+        $reward = Auth::user()->rewards->findOrFail($id);
 
         // 報酬に関連する画像があれば削除
         if ($reward->image) {

@@ -78,4 +78,12 @@ Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('
 Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
 Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
 
+Route::get('/bonus', 'App\Http\Controllers\BonusController@index')->name('bonus');
+Route::get('/bonus/paper', 'App\Http\Controllers\BonusController@showPaper')->name('bonus.paper');
+
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+Route::get('/', 'App\Http\Controllers\HomeController@index')->name('home');
 
