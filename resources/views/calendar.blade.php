@@ -25,30 +25,47 @@
             flex-direction: column;
             position: relative;
         }
-        .habit-marker {
-            width: 50%;
-            height: 50%;
+        .date-number {
             position: absolute;
+            top: 1px;
+            left: 1px;
+            font-size: 0.75rem;
+            z-index: 10;
+            font-weight: 500;
         }
-        .habit-marker-tl {
-            top: 0;
-            left: 0;
-            border-top-left-radius: 4px;
+        .category-header {
+            background-color: #0066cc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
-        .habit-marker-tr {
-            top: 0;
-            right: 0;
-            border-top-right-radius: 4px;
+        .category-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            background-color: white;
+            margin-bottom: 5px;
+            border-left: 4px solid;
+            color: #666;
         }
-        .habit-marker-bl {
-            bottom: 0;
-            left: 0;
-            border-bottom-left-radius: 4px;
+        .for-example {
+            font-style: italic;
+            color: #888;
+            margin-bottom: 10px;
+            padding: 8px 12px;
         }
-        .habit-marker-br {
-            bottom: 0;
-            right: 0;
-            border-bottom-right-radius: 4px;
+        .exercise {
+            border-color: #ef4444;
+        }
+        .nutrition {
+            border-color: #84cc16;
+        }
+        .sleep {
+            border-color: #3b82f6;
+        }
+        .other {
+            border-color: #a855f7;
         }
     </style>
 </head>
@@ -88,192 +105,210 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-6">
-        <!-- Habit History Section -->
-        <section class="bg-white rounded-lg shadow-sm p-6 mb-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-light text-gray-200">habits history</h2>
-                <h2 class="text-3xl font-medium text-green-700">March</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Category Panel (Left Side) -->
+            <div class="md:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                    <div class="category-header">Exercise</div>
+                    <div class="for-example">for example:</div>
+                    <div class="category-item exercise">🏃‍♂️ Running</div>
+                    <div class="category-item exercise">💪 Strength Training</div>
+                    <div class="category-item exercise">🧘 Yoga</div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                    <div class="category-header">Nutrition</div>
+                    <div class="for-example">for example:</div>
+                    <div class="category-item nutrition">🥗 Healthy Meal</div>
+                    <div class="category-item nutrition">💧 Water Intake</div>
+                    <div class="category-item nutrition">🍫 No Snacks</div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                    <div class="category-header">Sleep</div>
+                    <div class="for-example">for example:</div>
+                    <div class="category-item sleep">🛌 Early to Bed</div>
+                    <div class="category-item sleep">💤 8+ Hours</div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="category-header">Other</div>
+                    <div class="for-example">for example:</div>
+                    <div class="category-item other">📚 Reading</div>
+                    <div class="category-item other">🧠 Meditation</div>
+                </div>
             </div>
 
-            <!-- Habit Icons -->
-            <div class="flex space-x-4 mb-8">
-                <div class="flex items-center">
-                    <div class="habit-icon bg-red-400 mr-1"></div>
-                    <span class="text-sm">🏃‍♂️</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="habit-icon bg-yellow-400 mr-1"></div>
-                    <span class="text-sm">💪</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="habit-icon bg-purple-400 mr-1"></div>
-                    <span class="text-sm">📚</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="habit-icon bg-blue-300 mr-1"></div>
-                    <span class="text-sm">💤</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="habit-icon bg-green-400 mr-1"></div>
-                    <span class="text-sm">🥗</span>
+            <!-- Habit History Section (Right Side) -->
+            <section class="bg-white rounded-lg shadow-sm p-6 mb-8 md:col-span-3">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-light text-gray-200">habits history</h2>
+                    <h2 class="text-3xl font-medium text-green-700">March</h2>
                 </div>
 
-            </div>
-
-            <!-- Calendar -->
-            <div class="calendar">
-                <!-- Days of Week -->
-                <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
-                    <div>SUN</div>
-                    <div>MON</div>
-                    <div>TUE</div>
-                    <div>WED</div>
-                    <div>THU</div>
-                    <div>FRI</div>
-                    <div>SAT</div>
-                </div>
-
-                <!-- Week 1 -->
-                <div class="grid grid-cols-7 gap-2 mb-2">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">1</div>
-                        <div class="habit-marker habit-marker-tl bg-blue-400"></div>
-                        <div class="habit-marker habit-marker-tr bg-purple-400"></div>
-                        <div class="habit-marker habit-marker-bl bg-green-400"></div>
-                        <div class="habit-marker habit-marker-br bg-orange-400"></div>
+                <!-- Habit Icons Legend -->
+                <div class="flex space-x-4 mb-8">
+                    <div class="flex items-center">
+                        <div class="habit-icon bg-red-400 mr-1"></div>
+                        <span class="text-sm">Exercise</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="habit-icon bg-green-400 mr-1"></div>
+                        <span class="text-sm">Nutrition</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="habit-icon bg-blue-400 mr-1"></div>
+                        <span class="text-sm">Sleep</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="habit-icon bg-purple-400 mr-1"></div>
+                        <span class="text-sm">Other</span>
                     </div>
                 </div>
 
-                <!-- Week 2 -->
-                <div class="grid grid-cols-7 gap-2 mb-2">
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">2</div>
+                <!-- Calendar -->
+                <div class="calendar">
+                    <!-- Days of Week -->
+                    <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
+                        <div>SUN</div>
+                        <div>MON</div>
+                        <div>TUE</div>
+                        <div>WED</div>
+                        <div>THU</div>
+                        <div>FRI</div>
+                        <div>SAT</div>
                     </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">3</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">4</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">5</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">6</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">7</div>
-                        <div class="habit-marker habit-marker-tl bg-blue-400"></div>
-                        <div class="habit-marker habit-marker-br bg-orange-400"></div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">8</div>
-                    </div>
-                </div>
 
-                <!-- Week 3 -->
-                <div class="grid grid-cols-7 gap-2 mb-2">
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">9</div>
+                    <!-- Week 1 -->
+                    <div class="grid grid-cols-7 gap-2 mb-2">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div class="calendar-cell">
+                            <span class="date-number">1</span>
+                        </div>
                     </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">10</div>
-                        <div class="habit-marker habit-marker-bl bg-green-400"></div>
-                        <div class="habit-marker habit-marker-br bg-orange-400"></div>
-                        <div class="habit-marker habit-marker-tr bg-purple-400"></div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">11</div>
-                        <div class="habit-marker habit-marker-tl bg-blue-400"></div>
-                        <div class="habit-marker habit-marker-bl bg-green-400"></div>
-                        <div class="habit-marker habit-marker-tr bg-purple-400"></div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">12</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">13</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">14</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">15</div>
-                    </div>
-                </div>
 
-                <!-- Week 4 -->
-                <div class="grid grid-cols-7 gap-2 mb-2">
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">16</div>
+                    <!-- Week 2 -->
+                    <div class="grid grid-cols-7 gap-2 mb-2">
+                        <div class="calendar-cell">
+                            <span class="date-number">2</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">3</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">4</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">5</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">6</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">7</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">8</span>
+                        </div>
                     </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">17</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">18</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">19</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">20</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">21</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">22</div>
-                    </div>
-                </div>
 
-                <!-- Week 5 -->
-                <div class="grid grid-cols-7 gap-2 mb-2">
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">23</div>
+                    <!-- Week 3 -->
+                    <div class="grid grid-cols-7 gap-2 mb-2">
+                        <div class="calendar-cell">
+                            <span class="date-number">9</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">10</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">11</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">12</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">13</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">14</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">15</span>
+                        </div>
                     </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">24</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">25</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">26</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">27</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">28</div>
-                    </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">29</div>
-                    </div>
-                </div>
 
-                <!-- Week 6 (if needed) -->
-                <div class="grid grid-cols-7 gap-2">
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">30</div>
+                    <!-- Week 4 -->
+                    <div class="grid grid-cols-7 gap-2 mb-2">
+                        <div class="calendar-cell">
+                            <span class="date-number">16</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">17</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">18</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">19</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">20</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">21</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">22</span>
+                        </div>
                     </div>
-                    <div class="calendar-cell">
-                        <div class="absolute top-1 left-1 text-xs">31</div>
+
+                    <!-- Week 5 -->
+                    <div class="grid grid-cols-7 gap-2 mb-2">
+                        <div class="calendar-cell">
+                            <span class="date-number">23</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">24</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">25</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">26</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">27</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">28</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">29</span>
+                        </div>
                     </div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+
+                    <!-- Week 6 (if needed) -->
+                    <div class="grid grid-cols-7 gap-2">
+                        <div class="calendar-cell">
+                            <span class="date-number">30</span>
+                        </div>
+                        <div class="calendar-cell">
+                            <span class="date-number">31</span>
+                        </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </main>
 </body>
 </html>
