@@ -19,7 +19,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home'; // ログイン後に遷移するパスを /dashboard に変更
+    protected $redirectTo = '/home'; 
 
     /**
      * 認証に使用するカラムを指定（デフォルトは'email'）
@@ -67,19 +67,20 @@ class LoginController extends Controller
 
         // 認証情報を取得
         $credentials = $request->only('username', 'password');
-
+dd( $credentials);
         // 認証を試行
         if (Auth::attempt($credentials)) {
             // 認証成功時の処理
             $user = Auth::user(); // 認証されたユーザーを取得
             $user->updateLoginStatus(); // 連続ログイン記録を更新
 
-            return redirect()->intended($this->redirectTo); // 指定されたリダイレクト先に遷移
+            // return redirect()->intended($this->redirectTo); // 指定されたリダイレクト先に遷移
+            return redirect(route('home', absolute: false));
         }
 
         // 認証失敗時の処理
         return back()->withErrors([
-            'username' => 'ユーザー名またはパスワードが正しくありません。', // エラーメッセージを表示
+            'username' => 'Username or password is not correct', // エラーメッセージを表示
         ]);
     }
 }
