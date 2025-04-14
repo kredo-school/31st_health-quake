@@ -9,7 +9,6 @@ use App\Http\Controllers\HabitController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\RankingController;
-use App\Http\Controllers\RewardsController;
 
 // 習慣設定画面（追加フォーム）
 Route::get('/add_habit', function () {
@@ -69,21 +68,3 @@ Route::get('register', [RegisterController::class, 'showRegistrationForm'])->nam
 Route::post('register', [RegisterController::class, 'register']);
 
 Route::get('/ranking', [RankingController::class, 'index']);
-
-
-// 報酬関連ルート
-Route::get('/set-rewards', [RewardsController::class, 'index'])->name('rewards.index');
-Route::post('/set-rewards', [RewardsController::class, 'store'])->name('rewards.store');
-Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('rewards.edit');
-Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
-Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
-
-Route::get('/bonus', 'App\Http\Controllers\BonusController@index')->name('bonus');
-Route::get('/bonus/paper', 'App\Http\Controllers\BonusController@showPaper')->name('bonus.paper');
-
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
-Route::get('/', 'App\Http\Controllers\HomeController@index')->name('home');
-
