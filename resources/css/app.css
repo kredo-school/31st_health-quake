@@ -1,12 +1,160 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source "../**/*.blade.php";
-@source "../**/*.js";
-@source "../**/*.vue";
+/* 全体の背景色とフォント設定 */
+body {
+    background-color: #D6F0F4; /* 水色 */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+.container {
+    text-align: center;
+}
+
+.logo {
+    width: 200px; /* ロゴのサイズを調整 */
+    height: auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 200px;
+    padding: 10px;
+    background-color: #28a745; /* 緑色 */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.terms {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.terms a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* テール色の背景 */
+.bg-teal {
+    background-color: #D6F0F4; /* 水色 */
+}
+
+/* ロゴのサイズ調整 */
+.logo {
+    max-width: 200px;
+    height: auto;
+}
+
+/* フォームのタイトルと説明文 */
+h2 {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.author {
+    color: white; /* 白色に変更 */
+    font-size: 16px;
+    /* text-align: end; */
+    font-style: italic; /* イタリック体 */
+}
+
+.click {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* ボタンのスタイル */
+.btn-success {
+    background-color: #28a745; /* 緑色 */
+    border-color: #28a745;
+}
+
+/* エラーメッセージのスタイル */
+.invalid-feedback {
+    display: block;
+    margin-top: 5px;
+    color: #dc3545;
+}
+
+/* リンクのスタイル */
+.terms a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* ナビゲーションバー全体 */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* 他の要素の上に表示 */
+    background-color: #00B4D8; /* 背景色を指定 */
+}
+
+ロゴとアプリ名
+nav .logo-container {
+    display: flex;
+    flex-direction: column; /* 上下に並べる */
+    align-items: center;
+    gap: 5px; /* ロゴとテキストの間隔 */
+}
+
+nav .logo-container img {
+    height: 30px; /* ロゴの高さ */
+}
+
+nav .logo-container .app-name {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1; /* 行間を詰める */
+    color: white; /* テキストの色 */
+}
+
+/* リンク一覧 */
+nav .links {
+    display: flex;
+    gap: 20px; /* 各リンクの間隔 */
+}
+
+nav .links a {
+    text-decoration: none;
+    color: white; /* リンクの色 */
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+nav .links a:hover {
+    color: #28a745; /* クリック時の色変更 */
+}
+
+/* ユーザーアイコン */
+nav .user-icon {
+    position: relative;
+    cursor: pointer;
+}
+
+nav .user-icon img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* 丸形にする */
+    object-fit: cover; /* アイコン画像を適切に表示 */
 }

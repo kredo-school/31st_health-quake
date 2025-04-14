@@ -1,0 +1,19 @@
+body {
+    background-image: url('/images/background_2.png');/* 背景画像のパスを指定 */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .logo {
+            width: 200px; /* ロゴのサイズを調整 */
+        }
+       

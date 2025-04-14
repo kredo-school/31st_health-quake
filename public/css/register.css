@@ -1,3 +1,40 @@
+/* ナビゲーションバーの背景色を調整 */
+nav {
+    background-color: #f8f9fa; /* 明るい灰色 */
+}
+
+/* リンクのフォントサイズを大きく */
+nav .links a {
+    font-size: 18px;
+}
+
+/* ユーザーアイコンのサイズを少し小さく */
+nav .user-icon img {
+    width: 35px;
+    height: 35px;
+}
+
+/* ロゴのサイズ調整 */
+.logo {
+    max-width: 200px;
+    height: auto;
+}
+
+/* フォームのタイトルと説明文 */
+h2 {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+/* フォーム要素の統一 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%; /* フォームの幅を100%に統一 */
+    padding: 10px;
 /* 全体の背景色を統一 */
 body {
     font-family: Arial, sans-serif;
@@ -45,6 +82,28 @@ p {
     border-radius: 4px;
 }
 
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745; /* 緑色 */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* エラーメッセージのスタイル */
+.invalid-feedback {
+    display: block;
+    margin-top: 5px;
+    color: #dc3545;
+}
+
+/* リンクのスタイル */
+.terms a {
+    color: #007bff;
+    text-decoration: underline;
+}
 .input-group {
     margin: 10px 0;
 }

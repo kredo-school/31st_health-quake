@@ -9,5 +9,11 @@ class Habit extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'category', 'date', 'user_id'];
+    protected $fillable = ['name', 'category', 'date', 'user_id']; // 全ての必要フィールドを指定
+
+    // ユーザーとのリレーション
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
