@@ -10,7 +10,7 @@
             @csrf @method('PUT')
             <button type="submit">完了</button>
         </form>
-    </li>
+    </li> 
     @endforeach
 </ul>
 @endsection

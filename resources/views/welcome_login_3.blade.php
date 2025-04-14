@@ -15,4 +15,4 @@
 @section("css")
 <link rel="stylesheet" href="{{ asset("css/dashboard_3.css") }}">
 
-@endsection
+@endsection 

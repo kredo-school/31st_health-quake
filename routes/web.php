@@ -135,7 +135,9 @@ Route::middleware('auth')->group(function () {
      * カレンダー
      */
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendarnew', [CalendarController::class, 'shownew'])->name('calendar.shownew');
     Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show');
+    Route::get('/calendar/calendarnew', [CalendarController::class, 'shownew'])->name('calendar.calendarnew');
 });
 
 /**
@@ -160,6 +162,10 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('registernew', [RegisterController::class, 'store'])->name('registernew');
 
+// LOGIN
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+
 /**
  * API: タスクデータ取得
  */
@@ -169,11 +175,13 @@ Route::get('/api/tasks/{year}/{month}', [TaskController::class, 'getTasks']);
 
 use App\Http\Controllers\TimerController;
 
+// Timer ルート
 Route::get('/timer/start', [TimerController::class, 'index'])->name('timer.start');
-Route::get('/timer', [TimerController::class, 'show'])->name('timer.show');
+Route::get('/timer/show', [TimerController::class, 'show'])->name('timer.show');
 Route::post('/timer/stop', [TimerController::class, 'stopTimer'])->name('timer.stop');
 Route::post('/timer/restart', [TimerController::class, 'restartTimer'])->name('timer.restart');
-Route::post('/set-routine', [TimerController::class, 'quitTasks'])->name('set-routine.quit');
+Route::post('/set-routine/quit', [TimerController::class, 'quitTasks'])->name('set-routine.quit');
+Route::post('/timer/done', [TimerController::class, 'done'])->name('timer.done');
 
 use App\Http\Controllers\RewardsController;
 
@@ -183,4 +191,3 @@ Route::post('/set-rewards', [RewardsController::class, 'store'])->name('rewards.
 Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('rewards.edit');
 Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
 Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
-

@@ -10,7 +10,7 @@
                 <h2 class="text-2xl font-bold mb-4">Log in</h2>
                 <p class="mb-6">Enter your username & password to log in this app</p>
                 <!-- フォーム -->
-                <form method="POST" action="{{ route('loginnew') }}">
+                <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <!-- ユーザー名 -->
                     <div class="mb-4">

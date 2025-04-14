@@ -1,4 +1,4 @@
-{{-- resources/views/timer.blade.php --}}
+<!-- resources/views/timer.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +14,7 @@
     <div class="bg-white p-8 rounded shadow text-center">
         <!-- 上部のテキスト (例: Running, Exercise Category, 2025-03-14) -->
         <h1 class="text-2xl font-bold">
-            {{ $habitName }}, {{ $category }}
+            {{ $habitName }}, {{ $category }}, {{ $date ?? 'No Date' }}
         </h1>
 
         <!-- タイマー部分 -->
@@ -23,10 +23,13 @@
 
         <!-- DONEボタン -->
         <div class="mt-6">
-            <button
-                class="bg-green-500 text-white px-8 py-3 rounded font-bold hover:bg-green-600 transition">
-                DONE
-            </button>
+            <form action="{{ route('timer.done') }}" method="POST">
+                @csrf
+                <button type="submit"
+                        class="bg-green-500 text-white px-8 py-3 rounded font-bold hover:bg-green-600 transition">
+                    DONE
+                </button>
+            </form>
         </div>
 
         <!-- Stop / Restart / Quit Tasks ボタン -->

@@ -7,30 +7,41 @@ use Carbon\Carbon;
 
 class TimerController extends Controller
 {
+    /**
+     * タイマーページを表示するアクション
+     */
     public function index(Request $request)
     {
         // クエリパラメータから総時間を取得（デフォルトは300秒）
         $duration = $request->input('duration', 300);
 
-        // タスク名とカテゴリを取得
+        // タスク名とカテゴリ、日付を取得
         $habitName = $request->input('name', 'Default Habit');
         $category = $request->input('category', 'Default Category');
+        $date = $request->input('date', Carbon::now()->format('Y-m-d')); // 現在の日付をデフォルト値として設定
 
-        // セッションにタイマーの開始時刻、総時間、タスク名、カテゴリ、フラグを保存
+        // セッションにタイマーの開始時刻、総時間、タスク名、カテゴリ、フラグ、日付を保存
         session()->put('timer_start', Carbon::now()); // タイマー開始時間
         session()->put('timer_duration', $duration); // タイマーの総時間（秒）
         session()->put('habit_name', $habitName); // タスク名
         session()->put('category', $category); // カテゴリ
+        session()->put('date', $date); // 日付
         session()->put('is_timer_running', true); // タイマーが動作中であることを示すフラグ
 
         return redirect()->route('timer.show'); // タイマーページにリダイレクト
     }
 
+    /**
+     * タイマーページを表示するアクション
+     */
     public function show()
     {
-        // タイマーの開始時刻を取得
+        // セッションからデータを取得
         $startTime = session('timer_start');
         $isRunning = session('is_timer_running', true); // フラグを取得（デフォルトは true）
+        $habitName = session('habit_name', 'Default Habit');
+        $category = session('category', 'Default Category');
+        $date = session('date', Carbon::now()->format('Y-m-d')); // 日付を取得
 
         if ($startTime && $isRunning) {
             $elapsedTime = Carbon::now()->diffInSeconds($startTime); // 経過時間（秒）
@@ -49,8 +60,9 @@ class TimerController extends Controller
         if ($remainingTime <= 0 || !$isRunning) {
             return view('timer', [
                 'timeCount' => sprintf('%d:%02d', floor($remainingTime / 60), $remainingTime % 60),
-                'habitName' => session('habit_name', 'Default Habit'),
-                'category' => session('category', 'Default Category'),
+                'habitName' => $habitName,
+                'category' => $category,
+                'date' => $date,
             ]);
         }
 
@@ -61,8 +73,9 @@ class TimerController extends Controller
         // ビューにデータを渡す
         return view('timer', [
             'timeCount' => sprintf('%d:%02d', $minutes, $seconds), // 分:秒の形式で表示
-            'habitName' => session('habit_name', 'Default Habit'), // タスク名
-            'category' => session('category', 'Default Category'), // カテゴリ
+            'habitName' => $habitName, // タスク名
+            'category' => $category, // カテゴリ
+            'date' => $date, // 日付
         ]);
     }
 
@@ -99,7 +112,22 @@ class TimerController extends Controller
     public function quitTasks()
     {
         // 必要に応じて処理を記述（例: セッションのクリアなど）
-        session()->forget(['timer_start', 'timer_duration', 'habit_name', 'category']);
+        session()->forget(['timer_start', 'timer_duration', 'habit_name', 'category', 'date']);
         return redirect('/'); // トップページにリダイレクト
+    }
+
+    /**
+     * DONEボタンを押したときのアクション
+     */
+    public function done(Request $request)
+    {
+        // 必要なデータを保存する処理（例：タイムスタンプや完了フラグ）
+        // ここに具体的な保存処理を書く
+
+        // 現在の日付を取得
+        $date = session('date', Carbon::now()->format('Y-m-d'));
+
+        // calendarページにリダイレクト（パラメータを渡す）
+        return redirect()->route('calendar.show', ['date' => $date]);
     }
 }

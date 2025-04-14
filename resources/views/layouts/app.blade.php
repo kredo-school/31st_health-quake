@@ -24,7 +24,7 @@
             <!-- 中央：リンク -->
             <div class="flex items-center space-x-4">
                 <a href="{{ route('home') }}" class="text-gray-600 hover:text-gray-800">Home</a>
-                <a href="{{ route('calendar.index') }}" class="text-gray-600 hover:text-gray-800">Calendar</a>
+                <a href="{{ route('calendar.calendarnew') }}" class="text-gray-600 hover:text-gray-800">Calendar</a>
                 <a href="{{ route('set-routine') }}" class="text-gray-600 hover:text-gray-800">Task</a>
                 <a href="{{ route('ranking') }}" class="text-gray-600 hover:text-gray-800">Ranking</a>
             </div>

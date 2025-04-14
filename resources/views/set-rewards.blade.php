@@ -40,7 +40,7 @@
             <p class="text-gray-600">You get one of three rewards at random when you reach level 5.</p>
             <!-- ADD HABITS Button -->
             <button id="addHabitsBtn" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-md shadow-md transition-all">
-                ADD HABITS
+                ADD REWARDS
             </button>
         </div>
         <!-- My Rewards Section -->
@@ -49,7 +49,7 @@
             <div id="rewardsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Rewards will be added here via JavaScript -->
                 <div class="flex justify-center items-center text-gray-400 col-span-3 py-10">
-                    <p>No rewards added yet. Click "ADD HABITS" to set your rewards.</p>
+                    <p>No rewards added yet. Click "ADD REWARDS" to set your rewards.</p>
                 </div>
             </div>
         </div>

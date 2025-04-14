@@ -12,21 +12,11 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * ログイン後のリダイレクト先を指定
-     *
-     * このプロパティは、ログイン成功後に遷移するパスを指定します。
-     * ここでは /dashboard に遷移するように設定しています。
-     *
      * @var string
      */
     protected $redirectTo = '/home'; 
 
     /**
-     * 認証に使用するカラムを指定（デフォルトは'email'）
-     *
-     * Laravelのデフォルトでは'email'を使用しますが、
-     * ここでは 'username' を使用するように変更しています。
-     *
      * @return string
      */
     public function username()
@@ -35,12 +25,6 @@ class LoginController extends Controller
     }
 
     /**
-     * Create a new controller instance.
-     *
-     * コンストラクタでミドルウェアを設定しています。
-     * 'guest' ミドルウェアは、ログイン済みのユーザーがログインページにアクセスすることを防ぎます。
-     * ただし、'logout' アクションは例外として許可されています。
-     *
      * @return void
      */
     public function __construct()
@@ -49,11 +33,6 @@ class LoginController extends Controller
     }
 
     /**
-     * ログイン処理をオーバーライドしてカスタマイズ
-     *
-     * デフォルトのログイン処理を拡張し、独自のバリデーションや認証ロジックを追加できます。
-     * ここでは、Auth::attempt() を使用して手動で認証を行っています。
-     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
@@ -67,7 +46,7 @@ class LoginController extends Controller
 
         // 認証情報を取得
         $credentials = $request->only('username', 'password');
-dd( $credentials);
+
         // 認証を試行
         if (Auth::attempt($credentials)) {
             // 認証成功時の処理

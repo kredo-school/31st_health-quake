@@ -63,10 +63,16 @@
                                 Delete
                             </a>
                             <!-- START ボタン -->
-                                <a href="/timer/start?duration={{ $habit->duration }}"
-                                    class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition">
+                            <form action="{{ route('timer.start') }}" method="GET">
+                                @csrf
+                                <input type="hidden" name="name" value="{{ $habit->name }}">
+                                <input type="hidden" name="category" value="{{ $habit->category }}">
+                                <input type="hidden" name="date" value="{{ $habit->date }}">
+                                <button type="submit"
+                                        class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition">
                                     START
-                                </a>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

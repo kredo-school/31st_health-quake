@@ -41,10 +41,10 @@
                 <label for="options" class="block font-semibold mb-1">Category</label>
                 <select id="options" name="category"
                         class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="Exercise Category">Exercise Category</option>
-                    <option value="Nutrition Category">Nutrition Category</option>
-                    <option value="Sleep Category">Sleep Category</option>
-                    <option value="Other Categories">Other Categories</option>
+                    <option value="Exercise Category">Exercise</option>
+                    <option value="Nutrition Category">Nutrition</option>
+                    <option value="Sleep Category">Sleep</option>
+                    <option value="Other Categories">Other</option>
                 </select>
             </div>
 
