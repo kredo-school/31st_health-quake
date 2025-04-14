@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Habit; // Habitモデルをインポート
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Carbon\Carbon as CarbonInstance;
 
 class CalendarController extends Controller
 {

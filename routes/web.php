@@ -191,3 +191,12 @@ Route::post('/set-rewards', [RewardsController::class, 'store'])->name('rewards.
 Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('rewards.edit');
 Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
 Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
+
+use App\Http\Controllers\CalendarControllernew;
+
+// CalendarController に関連するルート
+Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show');
+
+// CalendarControllernew に関連するルート
+Route::get('/calendarnew', [CalendarControllernew::class, 'shownew'])->name('calendar.shownew');

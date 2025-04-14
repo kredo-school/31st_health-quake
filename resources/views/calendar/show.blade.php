@@ -137,15 +137,31 @@
                 <!-- Calendar -->
                 <div class="calendar">
                     <!-- Days of Week -->
-                    <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
-                        <div>SUN</div>
-                        <div>MON</div>
-                        <div>TUE</div>
-                        <div>WED</div>
-                        <div>THU</div>
-                        <div>FRI</div>
-                        <div>SAT</div>
-                    </div>
+                    <!-- Calendar Grid -->
+<div class="grid grid-cols-7 gap-2">
+    @php
+        $dayCounter = 1;
+        $totalCells = ceil(($startDayOfWeek + $daysInMonth) / 7) * 7;
+    @endphp
+    @for ($i = 0; $i < $totalCells; $i++)
+        @if ($i < $startDayOfWeek || $dayCounter > $daysInMonth)
+            <div class="calendar-cell bg-gray-100"></div>
+        @else
+            @php
+                $dateStr = \Carbon\Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
+                $habits = $markedHabits[$dateStr] ?? [];
+            @endphp
+            <div class="calendar-cell bg-white">
+                <span class="date-number">{{ $dayCounter }}</span>
+                <div class="habit-square {{ $habits['exercise'] ?? false ? 'bg-red-400' : '' }}"></div>
+                <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
+                <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
+                <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
+            </div>
+            @php $dayCounter++; @endphp
+        @endif
+    @endfor
+</div>
 
                     @php
                         $startOfMonth = \Carbon\Carbon::create($year, $month, 1);
