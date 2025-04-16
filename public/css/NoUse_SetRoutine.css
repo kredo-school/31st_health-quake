@@ -77,13 +77,13 @@ body {
 .habit-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 列に分割 */
-    gap: 20px; /* 各カード間にスペースを追加 */
+    gap: 70px; /* 各カード間にスペースを追加 */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     min-height: 200px;
-    margin-bottom: 20px; /* 各カード間にマージンを追加 */
+    margin-bottom: 70px; /* 各カード間にマージンを追加 */
     width: 100%; /* 幅を全幅にする */
 }
 

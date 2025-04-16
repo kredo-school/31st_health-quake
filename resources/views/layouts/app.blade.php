@@ -8,7 +8,6 @@
     <!-- Tailwind CSS -->
     @vite('resources/css/app.css') 
     @yield('css') 
-
 </head>
 <body class="bg-teal font-sans antialiased">
 
@@ -28,24 +27,30 @@
                     $currentDate = \Carbon\Carbon::now()->format('Y-m-d'); // 現在の日付をデフォルト値として使用
                 @endphp
                 <a href="{{ route('calendar.show', ['date' => $currentDate]) }}">Calendar</a>
-
                 <a href="{{ route('set-routine') }}" class="text-gray-600 hover:text-gray-800">Task</a>
                 <a href="{{ route('ranking') }}" class="text-gray-600 hover:text-gray-800">Ranking</a>
             </div>
 
-            <!-- 右端：ユーザーアイコン -->
-            {{-- のちほど調整すべき点：ユーザーアイコンがデフォルト画像に指定→ユーザーuniqueに変更、logoutやアイコン画像の変更機能について配置を再検討 --}}
-            {{-- <img class="rounded-full" src="{{ auth()->user()->profile_photo_url ?? asset('images/default-user-icon.png') }}" alt="{{ auth()->user()->name }}"> --}}
-            <div class="relative">
+          <!-- 右端：ユーザーエリア -->
+            <div class="flexitems-center space-x-4">
                 @if (auth()->check())
-                
-                <img src="{{ asset('images/default-user-icon.png') }}" class="h-8 max-h-full object-contain">
-                    |&nbsp;
-                    <a href="{{ route('logout') }}" class="text-gray-600 hover:text-gray-800">Log out</a>
-                    &nbsp;|
+                    <!-- プロフィールアイコン（DBに保存された画像を表示） -->
+                    <a href="{{ route('profile') }}">
+                        <img class="h-10 w-10 rounded-full border-2 object-cover"
+                            src="{{ auth()->user()->profile_photo_url }}"
+                            alt="{{ auth()->user()->name }}">
+
+                    <!-- ログアウトボタン -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-white-600 hover:text-gray-400">
+                            Log out
+                        </button>
+                    </form>
                 @else
+                    <!-- ログイン・登録リンク（未ログイン時） -->
                     <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-800">Log in</a>
-                    &nbsp;|&nbsp;
+                    <span class="text-gray-400">|</span>
                     <a href="{{ route('register') }}" class="text-gray-600 hover:text-gray-800">Register</a>
                 @endif
             </div>
@@ -53,17 +58,17 @@
     </nav>
 
     <!-- メインコンテンツ -->
-<div class="container mx-auto px-4" style="padding-top: calc(6rem + 16px);">
-    <main>
-        @yield('content')
-        {{--　 登録ページ : resources/views/auth/register.blade.php
-        　　ログインページ : resources/views/auth/login.blade.php --}}
-    </main>
-</div>
-</body>
+    <div class="container mx-auto px-4" style="padding-top: calc(6rem + 16px);">
+        <main>
+            @yield('content')
+            {{-- 登録ページ : resources/views/auth/register.blade.php --}}
+            {{-- ログインページ : resources/views/auth/login.blade.php --}}
+        </main>
+    </div>
 
     <!-- カスタムスタイル（必要に応じて） -->
     <link rel="stylesheet" href="/css/register.css">
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     @yield('styles')
+</body>
 </html>
