@@ -6,8 +6,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\Habit; // Habitモデルをインポート
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Carbon;
-use Carbon\Carbon as CarbonInstance;
+use Carbon\Carbon;
 
 class CalendarController extends Controller
 {
@@ -20,7 +19,7 @@ class CalendarController extends Controller
      * カレンダーページを表示するメソッド
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         // ログイン中のユーザーを取得
         $user = Auth::user();
@@ -34,11 +33,7 @@ class CalendarController extends Controller
             ->take(4)
             ->get();
 
-        /**
-         * ここでは、'calendar' という名前のビューを返すように変更します。
-         * このビューは、カレンダーを表示するためのBladeテンプレートです。
-         * （※ 'calendar.blade.php' ファイルを作成する必要があります）
-         */
+        // カレンダー用のビューを返す
         return view('calendar.calendarnew', compact('habits'));
     }
 
@@ -49,31 +44,73 @@ class CalendarController extends Controller
      */
     public function show(string $date): View
     {
-        // 日付を解析
-        $parsedDate = now()->parse($date);
+        try {
+            // 日付を解析
+            $parsedDate = Carbon::parse($date);
 
-        // ログイン中のユーザーを取得
-        $user = Auth::user();
-        if (!$user) {
-            return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
+            // 年と月を取得
+            $year = $parsedDate->year; 
+            $month = $parsedDate->month;
+
+            // ログイン中のユーザーを取得
+            $user = Auth::user();
+            if (!$user) {
+                return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
+            }
+
+            // 該当日付の habit を取得
+            $habits = Habit::where('user_id', $user->id)
+                ->where('date', $parsedDate->format('Y-m-d'))
+                ->get();
+
+            // 各 habit の category を配列に格納
+            $categories = [];
+            foreach ($habits as $habit) {
+                $categories[$habit->category] = true;
+            }
+
+            // 月初の日付を生成
+            $startOfMonth = Carbon::create($year, $month, 1);
+            $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
+            $habits1 = Habit::where('user_id', $user->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->get()
+            ->groupBy('date');
+        $colors = [
+            'bg-yellow-300',
+            'bg-pink-300',
+            'bg-red-300',
+            'bg-blue-300',
+            'bg-green-200',
+            'bg-purple-200',
+            'bg-indigo-300',
+            'bg-orange-300',
+            'bg-teal-200',
+            'bg-emerald-300',
+        ];
+        $descriptions = [];
+        foreach ($habits1 as $date => $habitGroup) {
+            $descriptions[$date] = $habitGroup->map(function ($habit) use ($colors) {
+                return [
+                    'text' => $habit->name,
+                    'color' => $colors[array_rand($colors)],
+                ];
+            })->toArray();
         }
-
-        // 該当日付の habit を取得
-        $habits = Habit::where('user_id', $user->id)
-            ->where('date', $parsedDate->format('Y-m-d'))
-            ->get();
-
-        // 各 habit の category をセッションに保存
-        $categories = [];
-        foreach ($habits as $habit) {
-            $categories[$habit->category] = true;
+            return view('calendar.show', [
+                'date' => $parsedDate->format('Y-m-d'), // 日付をビューに渡す
+                'year' => $year, // 年をビューに渡す
+                'month' => $month, // 月をビューに渡す
+                'startDayOfWeek' => $startDayOfWeek, // 月初の曜日をビューに渡す
+                'habits' => $habits, // 習慣データをビューに渡す
+                'descriptions' => $descriptions,
+            ]);
+        } catch (\Exception $e) {
+            // 不正な日付の場合、エラーメッセージを表示
+            dd($e);
+            return back()->withErrors(['date' => 'Invalid date format. Please provide a valid date.']);
         }
-
-        session(['marked_habits_' . $parsedDate->format('Y-m-d') => $categories]);
-
-        return view('calendar.calendarnew', [
-            'date' => $parsedDate->format('Y-m-d'), // 日付をビューに渡す
-        ]);
     }
 
     /**
@@ -83,29 +120,7 @@ class CalendarController extends Controller
      */
     public function shownew(Request $request): View
     {
-        // 日付を解析
-        $parsedDate = now();
-
-        // ログイン中のユーザーを取得
-        $user = Auth::user();
-        if (!$user) {
-            return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
-        }
-
-        // 該当日付の habit を取得
-        $habits = Habit::where('user_id', $user->id)
-            ->where('date', $parsedDate->format('Y-m-d'))
-            ->get();
-
-        // 各 habit の category をセッションに保存
-        $categories = [];
-        foreach ($habits as $habit) {
-            $categories[$habit->category] = true;
-        }
-
-        session(['marked_habits_' . $parsedDate->format('Y-m-d') => $categories]);
-
-        // 年と月を取得
+        // 年と月を取得（デフォルトは現在の年月）
         $year = $request->input('year', now()->year);
         $month = $request->input('month', now()->month);
 
@@ -116,35 +131,31 @@ class CalendarController extends Controller
         $daysInMonth = $startOfMonth->daysInMonth;
         $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
 
-        // セッションから習慣データを取得（例: モックデータを使用）
-        $markedHabits = session('marked_habits', []);
+        // ログイン中のユーザーを取得
+        $user = Auth::user();
+        if (!$user) {
+            return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
+        }
 
-        // 現在の日付をフォーマット
-        $date = $parsedDate->format('Y-m-d');
+        // その月の習慣データを取得
+        $habits = Habit::where('user_id', $user->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->get();
 
-        // ダミーデータ（実際にはデータベースから取得）
-        $descriptions = [
-            '2025-04-05' => [
-                ['text' => 'Meeting with client', 'color' => 'bg-yellow-300'],
-                ['text' => 'Team review', 'color' => 'bg-pink-300'],
-            ],
-            '2025-04-12' => [
-                ['text' => 'Workout day', 'color' => 'bg-red-300'],
-            ],
-            '2025-04-15' => [
-                ['text' => 'Project deadline', 'color' => 'bg-blue-300'],
-                ['text' => 'Submit report', 'color' => 'bg-green-200'],
-            ],
-        ];
+        // 各 habit の category を配列に格納
+        $markedHabits = [];
+        foreach ($habits as $habit) {
+            $dateStr = $habit->date->format('Y-m-d');
+            $markedHabits[$dateStr][$habit->category] = true;
+        }
 
-        return view('calendar.calendarnew', compact(
-            'date',
-            'descriptions',
-            'year',
-            'month',
-            'daysInMonth',
-            'startDayOfWeek',
-            'markedHabits'
-        ));
+        return view('calendar.calendarnew', [
+            'year' => $year,
+            'month' => $month,
+            'daysInMonth' => $daysInMonth,
+            'startDayOfWeek' => $startDayOfWeek,
+            'markedHabits' => $markedHabits,
+        ]);
     }
 }

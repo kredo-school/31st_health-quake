@@ -8,10 +8,12 @@
             or sacrifice your future for momentary comfort and face lifelong regret
             </h1>
         {{-- <img src="images/logo.png" alt="Health Quake Logo" class="logo"> <!-- ロゴ画像のパスを指定 --> --}}
-        <p>Makoto Nin,
+        <p class="author">Makoto Nin,
             The originator of this app</p>
     </div>
-
+    <a href="/login-record" class=click>
+        click here to continue
+       </a>
 @endsection
 
 @section("css")

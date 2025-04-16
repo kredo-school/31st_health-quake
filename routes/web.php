@@ -196,7 +196,7 @@ use App\Http\Controllers\CalendarControllernew;
 
 // CalendarController に関連するルート
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
-Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show');
+// Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show');
 
 // CalendarControllernew に関連するルート
 Route::get('/calendarnew', [CalendarControllernew::class, 'shownew'])->name('calendar.shownew');

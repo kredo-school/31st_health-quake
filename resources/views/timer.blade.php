@@ -16,6 +16,7 @@
         <h1 class="text-2xl font-bold">
             {{ $habitName }}, {{ $category }}, {{ $date ?? 'No Date' }}
         </h1>
+        
 
         <!-- タイマー部分 -->
         <div class="text-4xl font-semibold mt-4">{{ $timeCount }}</div>
@@ -25,6 +26,9 @@
         <div class="mt-6">
             <form action="{{ route('timer.done') }}" method="POST">
                 @csrf
+                <input type="hidden" id="name" name="name" value="{{ $habitName }}" >
+                <input type="hidden" id="category" name="category" value="{{ $category }}" >
+                
                 <button type="submit"
                         class="bg-green-500 text-white px-8 py-3 rounded font-bold hover:bg-green-600 transition">
                     DONE
@@ -36,7 +40,7 @@
         <div class="mt-4 flex justify-center space-x-4">
             <!-- Stop ボタン -->
             @if(session('is_timer_running'))
-                <form action="{{ route('timer.stop') }}" method="POST" class="inline">
+                <form action="{{ route('timer.stop') }}" method="POST" class="inline"> 
                     @csrf
                     <button type="submit"
                             class="bg-orange-500 text-white px-6 py-3 rounded font-bold hover:bg-orange-600 transition">

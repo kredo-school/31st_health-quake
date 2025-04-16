@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Models\Habit;
+use Illuminate\Support\Facades\Auth;
 
 class TimerController extends Controller
 {
@@ -121,8 +123,14 @@ class TimerController extends Controller
      */
     public function done(Request $request)
     {
-        // 必要なデータを保存する処理（例：タイムスタンプや完了フラグ）
-        // ここに具体的な保存処理を書く
+    
+        Habit::create([
+            'user_id' => Auth::id(),
+             'name' => $request['name'],
+            'category' => $request['category'],
+            'date' => Carbon::now()->format('Y-m-d') , 
+        ]);
+    
 
         // 現在の日付を取得
         $date = session('date', Carbon::now()->format('Y-m-d'));
