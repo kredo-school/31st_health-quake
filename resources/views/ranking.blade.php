@@ -1,3 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
 <!DOCTYPE html>
 <html lang="en">
 
@@ -129,29 +132,10 @@
         }
     </style>
 </head>
+<body class="bg-blue-100 m-0 p-0 font-sans">
 
-<body>
-    <!-- ヘッダー -->
-    <header>
-        <div class="logo">
-            <img src="https://via.placeholder.com/50" alt="Logo">
-            <span>HEALTH QUAKE</span>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Calendar</a></li>
-                <li><a href="#">Task</a></li>
-                <li><a href="#">Ranking</a></li>
-            </ul>
-        </nav>
-        <div class="profile">
-            <img src="https://via.placeholder.com/50" alt="Profile" style="border-radius: 50%;">
-        </div>
-    </header>
-
-    <!-- メインコンテンツ -->
-    <main>
+    <!-- Main contents -->
+    <main class="max-w-3xl mx-auto p-5">
         @foreach ($ranks as $rank)
             <div class="rank-item">
                 <img src="{{ $rank['avatar'] }}" alt="{{ $rank['name'] }}">
@@ -172,3 +156,24 @@
 </body>
 
 </html>
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

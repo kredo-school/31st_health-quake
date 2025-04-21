@@ -9,20 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('habits', function (Blueprint $table) {
-            //
+            $table->integer('duration')->default(300); // デフォルト値は300秒（5分）
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('habits', function (Blueprint $table) {
-            //
+            $table->dropColumn('duration');
         });
     }
 };

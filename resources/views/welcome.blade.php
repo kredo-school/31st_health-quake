@@ -28,7 +28,11 @@
 <body>
     <div class="container">
         <h1>Congratulations to all of you who have given up on a healthy lifestyle!</h1>
-        <img src="images/logo.png" alt="Health Quake Logo" class="logo"> <!-- ロゴ画像のパスを指定 -->
+        <!-- ロゴをクリックすると register ページに遷移 -->
+        <a href="{{ route('register') }}">
+            <img src="images/logo.png" alt="Health Quake Logo" class="logo">
+            <br>click here to start
+        </a>
         <p>This app provides scientific support for human health habits. Using this app, you can develop good health habits with near 100% probability.</p>
     </div>
 </body>

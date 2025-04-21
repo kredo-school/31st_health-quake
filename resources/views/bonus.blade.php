@@ -41,7 +41,6 @@
         display: block;
         margin: 0 auto;
     }
-
     .bonus-star {
         position: absolute;
         top: 0;
@@ -54,7 +53,6 @@
         background-size: contain;
         filter: drop-shadow(0 4px 8px rgba(255, 152, 0, 0.5));
     }
-
     .bonus-ribbon {
         position: absolute;
         top: 43%;
@@ -70,7 +68,6 @@
         border-radius: 3px;
         z-index: 10;
     }
-
     .click-text {
         position: absolute;
         bottom: -40px;
@@ -87,7 +84,6 @@
         transition: all 0.3s ease;
         white-space: nowrap;
     }
-
     .bonus-ribbon:before, .bonus-ribbon:after {
         content: '';
         position: absolute;
@@ -96,17 +92,14 @@
         height: 2px;
         background: #D32F2F;
     }
-
     .bonus-ribbon:before {
         left: -20px;
         transform: translateY(-50%);
     }
-
     .bonus-ribbon:after {
         right: -20px;
         transform: translateY(-50%);
     }
-
     /* Animation effects when interacted with */
     .bonus-star-container:hover {
         transform: scale(1.1) rotate(5deg);
@@ -149,27 +142,22 @@
         animation: none;
         transform: scale(1.1) rotate(5deg);
     }
-
     .bonus-star-container:hover .click-text {
         animation: none;
     }
 </style>
-
 <script>
     // Add interactive effects with JavaScript
     document.addEventListener('DOMContentLoaded', function() {
         const starContainer = document.querySelector('.bonus-star-container');
-
         // Add a "sparkle" effect when clicked
         starContainer.addEventListener('click', function(e) {
             // Don't prevent default so the link still works
             this.classList.add('clicked');
-
             // Create sparkle elements
             for (let i = 0; i < 15; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.classList.add('sparkle');
-
                 // Random position around the star
                 const angle = Math.random() * Math.PI * 2;
                 const distance = 70 + Math.random() * 40;
@@ -194,13 +182,11 @@
         });
     });
 </script>
-
 <style>
     /* Additional styles for the sparkle effect */
     .bonus-star-container {
         overflow: visible;
     }
-
     .sparkle {
         position: absolute;
         border-radius: 50%;
@@ -208,7 +194,6 @@
         animation: sparkleAnimation 1s forwards;
         z-index: 20;
     }
-
     @keyframes sparkleAnimation {
         0% {
             transform: scale(0) rotate(0deg);

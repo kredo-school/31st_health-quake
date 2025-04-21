@@ -13,15 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // テストユーザーの作成
-        User::factory()->create([
-            'name' => 'テストユーザー',
-            'email' => 'test@example.com',
-        ]);
+        User::factory(10)->create();
 
-        // タスクデータの投入
-        $this->call([
-            TaskSeeder::class,
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
     }
 }

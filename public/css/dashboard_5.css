@@ -1,0 +1,70 @@
+/* dashboard_5.css */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url('/images/background_5.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ナビゲーションバーのコンテナ - 重要な部分 */
+.nav-container {
+    background-color: white;
+    padding: 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+nav.bg-white {
+    background-color: white;
+    padding: 10px 0;
+}
+
+/* メインコンテンツのスタイル */
+.content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* 引用部分のスタイル */
+blockquote {
+    font-size: 24px;
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+    line-height: 1.6;
+}
+
+/* 著者のスタイル */
+.author {
+    font-size: 16px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+/* 続行ボタンのスタイル */
+.continue-btn {
+    color: #2196F3;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.continue-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}

@@ -1,3 +1,6 @@
+ @extends('layouts.app')
+
+ @section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +12,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e0f7fa;
+            background-color: #E0F7FA;
         }
         .modal {
             transition: opacity 0.3s ease;
@@ -29,54 +32,27 @@
     </style>
 </head>
 <body class="min-h-screen pb-10">
-    <!-- Header & Navigation -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center">
-                <div class="flex items-center text-green-500 font-bold text-xl">
-                    <svg class="w-8 h-8 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
-                    </svg>
-                    HEALTH QUAKE
-                </div>
-            </div>
-            <nav class="flex">
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-green-500">Home</a>
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-green-500">Calendar</a>
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-green-500">Task</a>
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-green-500">Ranking</a>
-            </nav>
-            <div class="flex items-center">
-                <div class="h-10 w-10 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold">
-                    JD
-                </div>
-            </div>
-        </div>
-    </header>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold mb-2">Set yourself rewards</h1>
             <p class="text-gray-600">You get one of three rewards at random when you reach level 5.</p>
-
             <!-- ADD HABITS Button -->
             <button id="addHabitsBtn" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-md shadow-md transition-all">
-                ADD HABITS
+                ADD REWARDS
             </button>
         </div>
-
         <!-- My Rewards Section -->
         <div class="mb-8">
             <h2 class="text-2xl font-bold mb-4 text-center">My rewards</h2>
             <div id="rewardsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Rewards will be added here via JavaScript -->
                 <div class="flex justify-center items-center text-gray-400 col-span-3 py-10">
-                    <p>No rewards added yet. Click "ADD HABITS" to set your rewards.</p>
+                    <p>No rewards added yet. Click "ADD REWARDS" to set your rewards.</p>
                 </div>
             </div>
         </div>
-
         <!-- Modal for Adding/Editing Rewards -->
         <div id="rewardsModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
@@ -120,7 +96,6 @@
             </div>
         </div>
     </main>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements
@@ -135,23 +110,21 @@
             const editingId = document.getElementById('editingId');
             const modalTitle = document.getElementById('modalTitle');
 
-            // Sample reward images
+
+// Sample reward images
             const sampleImages = [
                 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38',
                 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131',
                 'https://images.unsplash.com/photo-1565958011703-44f9829ba187'
             ];
-
             // Rewards store
             let rewards = [];
-
             // Show modal
             addHabitsBtn.addEventListener('click', function() {
                 if (rewards.length >= 3) {
                     alert('You can only have a maximum of 3 rewards. Please delete some to add more.');
                     return;
                 }
-
                 // Reset form for adding new reward
                 rewardForm.reset();
                 editingId.value = '';
@@ -159,12 +132,10 @@
                 modalTitle.textContent = 'Set your Rewards';
                 rewardsModal.classList.remove('hidden');
             });
-
             // Close modal
             cancelBtn.addEventListener('click', function() {
                 rewardsModal.classList.add('hidden');
             });
-
             // Image preview
             rewardImage.addEventListener('change', function() {
                 const file = this.files[0];
@@ -177,21 +148,17 @@
                     reader.readAsDataURL(file);
                 }
             });
-
             // Save reward
             rewardForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-
                 const rewardName = document.getElementById('rewardName').value;
                 const rewardLevel = document.getElementById('rewardLevel').value;
                 const editId = editingId.value;
-
                 // Validation
                 if (!rewardName.trim()) {
                     alert('Please enter a reward name');
                     return;
                 }
-
                 // Get image from file or use sample
                 let imageSrc = '';
                 if (rewardImage.files && rewardImage.files[0]) {
@@ -200,7 +167,6 @@
                     // Use random sample image if none uploaded
                     imageSrc = sampleImages[Math.floor(Math.random() * sampleImages.length)];
                 }
-
                 if (editId) {
                     // Edit existing reward
                     const index = rewards.findIndex(r => r.id === editId);
@@ -222,14 +188,11 @@
                     };
                     rewards.push(newReward);
                 }
-
                 // Update display
                 renderRewards();
-
                 // Close modal
                 rewardsModal.classList.add('hidden');
             });
-
             // Delete reward
             function deleteReward(id) {
                 if (confirm('Are you sure you want to delete this reward?')) {
@@ -237,7 +200,6 @@
                     renderRewards();
                 }
             }
-
             // Edit reward
             function editReward(id) {
                 const reward = rewards.find(r => r.id === id);
@@ -245,19 +207,16 @@
                     document.getElementById('rewardName').value = reward.name;
                     document.getElementById('rewardLevel').value = reward.level;
                     editingId.value = reward.id;
-
                     if (reward.image) {
                         imagePreview.src = reward.image;
                         previewContainer.classList.remove('hidden');
                     } else {
                         previewContainer.classList.add('hidden');
                     }
-
                     modalTitle.textContent = 'Edit your Reward';
                     rewardsModal.classList.remove('hidden');
                 }
             }
-
             // Render rewards
             function renderRewards() {
                 if (rewards.length === 0) {
@@ -268,9 +227,7 @@
                     `;
                     return;
                 }
-
                 rewardsContainer.innerHTML = '';
-
                 rewards.forEach(reward => {
                     const card = document.createElement('div');
                     card.className = 'reward-card bg-white rounded-lg shadow-md overflow-hidden';
@@ -296,11 +253,9 @@
                     rewardsContainer.appendChild(card);
                 });
             }
-
             // Make functions globally available
             window.deleteReward = deleteReward;
             window.editReward = editReward;
-
             // Add sample rewards
             if (rewards.length === 0) {
                 rewards = [
@@ -325,7 +280,6 @@
                 ];
                 renderRewards();
             }
-
             // Click outside modal to close
             window.addEventListener('click', function(e) {
                 if (e.target === rewardsModal) {
@@ -336,3 +290,4 @@
     </script>
 </body>
 </html>
+@endsection
