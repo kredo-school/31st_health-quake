@@ -12,11 +12,11 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #E0F7FA;
-            padding-top: 60px; /* ナビゲーションバーの高さ分の余白 */
-            overflow: auto; /* 必要に応じてスクロールを有効化 */
+            padding-top: 60px;
+            overflow: auto;
         }
         main {
-            margin-top: 420px; /* ナビゲーションバーの高さ分の余白 */
+            margin-top: 420px;
         }
         .habit-icon {
             width: 24px;
@@ -61,31 +61,21 @@
             border-left: 4px solid;
             color: #666;
         }
-        .for-example { 
+        .for-example {
             font-style: italic;
             color: #888;
             margin-bottom: 10px;
             padding: 8px 12px;
         }
-        .exercise {
-            border-color: #ef4444;
-        }
-        .nutrition {
-            border-color: #36db96;
-        }
-        .sleep {
-            border-color: #3b82f6;
-        }
-        .other {
-            border-color: #a855f7;
-        }
+        .exercise { border-color: #ef4444; }
+        .nutrition { border-color: #36db96; }
+        .sleep { border-color: #3b82f6; }
+        .other { border-color: #a855f7; }
     </style>
 </head>
 <body>
-    <!-- Main Content -->
     <main class="container mx-auto px-4 py-6">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <!-- Category Panel (Left Side) -->
             <div class="md:col-span-1">
                 <div class="for-example">for example:</div>
                 <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
@@ -112,9 +102,7 @@
                 </div>
             </div>
 
-            <!-- Right Panel (Calendar) -->
             <section class="bg-white rounded-lg shadow-sm p-6 mb-8 md:col-span-4">
-                <!-- Legend -->
                 <div class="flex space-x-4 mb-8">
                     <div class="flex items-center"><div class="habit-icon bg-red-400 mr-1"></div><span class="text-sm">Exercise</span></div>
                     <div class="flex items-center"><div class="habit-icon bg-green-400 mr-1"></div><span class="text-sm">Nutrition</span></div>
@@ -122,7 +110,6 @@
                     <div class="flex items-center"><div class="habit-icon bg-purple-400 mr-1"></div><span class="text-sm">Other</span></div>
                 </div>
 
-                <!-- Navigation -->
                 <div class="flex justify-between items-center mb-6">
                     @php
                         use Carbon\Carbon;
@@ -130,25 +117,16 @@
                         $prev = $current->copy()->subMonth();
                         $next = $current->copy()->addMonth();
                         $startOfMonth = Carbon::create($year, $month, 1);
-                        $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
+                        $startDayOfWeek = $startOfMonth->dayOfWeek;
                         $daysInMonth = $startOfMonth->daysInMonth;
                     @endphp
-                    <a href="{{ route('calendar.show', ['date' => $prev->format('Y-m-d')]) }}"
-                       class="text-blue-600 hover:underline">← {{ $prev->format('F Y') }}</a>
+                    <a href="{{ route('calendar.show', ['date' => $prev->format('Y-m-d')]) }}" class="text-blue-600 hover:underline">← {{ $prev->format('F Y') }}</a>
                     <h2 class="text-2xl font-semibold text-gray-800">{{ $current->format('F Y') }}</h2>
-                    <a href="{{ route('calendar.show', ['date' => $next->format('Y-m-d')]) }}"
-                       class="text-blue-600 hover:underline">{{ $next->format('F Y') }} →</a>
+                    <a href="{{ route('calendar.show', ['date' => $next->format('Y-m-d')]) }}" class="text-blue-600 hover:underline">{{ $next->format('F Y') }} →</a>
                 </div>
 
-                <!-- Calendar Grid -->
                 <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
-                    <div>SUN</div>
-                    <div>MON</div>
-                    <div>TUE</div>
-                    <div>WED</div>
-                    <div>THU</div>
-                    <div>FRI</div>
-                    <div>SAT</div>
+                    <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
                 </div>
                 <div class="grid grid-cols-7 gap-2">
                     @php
@@ -171,10 +149,19 @@
                                 <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
                                 <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
                                 @foreach ($notes as $note)
-                                <div class="mt-1 text-xs text-gray-800 px-1 py-1 rounded {{ $note['color'] }}">
-                                    {{ $note['text'] }}
-                                </div>
-                            @endforeach
+                                    @php
+                                        $categoryColorMap = [
+                                            'exercise' => 'bg-red-400',
+                                            'nutrition' => 'bg-green-400',
+                                            'sleep' => 'bg-blue-400',
+                                            'other' => 'bg-purple-400'
+                                        ];
+                                        $color = $categoryColorMap[$note['category']] ?? 'bg-gray-300';
+                                    @endphp
+                                    <div class="mt-1 text-xs text-gray-800 px-1 py-1 rounded {{ $color }}">
+                                        {{ $note['text'] }}
+                                    </div>
+                                @endforeach
                             </div>
                             @php $dayCounter++; @endphp
                         @endif
@@ -185,4 +172,4 @@
     </main>
 </body>
 </html>
-@endsection 
+@endsection

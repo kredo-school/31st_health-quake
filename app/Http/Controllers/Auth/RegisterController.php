@@ -51,6 +51,21 @@ class RegisterController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // if ($request->hasFile('profile_photo')) {
+        //     $file = $request->file('profile_photo');
+        //     // Use storeAs for full control
+        //     $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+        //     // Store file and get path
+        //     $path = $file->storeAs('public/profile-photos', $filename);
+        //     // Also get the public URL for display
+        //     $profilePhotoUrl = Storage::url('profile-photos/' . $filename);
+        //     dd([
+        //         'stored_path' => $path,
+        //         'public_url' => $profilePhotoUrl,
+        //         'exists' => Storage::exists($path),
+        //     ]);
+        // }
+
         // ✅ バリデーション（画像 + ユーザー名の重複チェック）
         $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users'], // ← 追加！
@@ -62,7 +77,7 @@ class RegisterController extends Controller
         $profilePhotoUrl = null;
         if ($request->hasFile('profile_photo')) {
             $file = $request->file('profile_photo');
-            $path = $file->store('public/profile_icons');
+            $path = $file->store('profile-photos', 'public');
             $profilePhotoUrl = Storage::url($path);
         }
 
