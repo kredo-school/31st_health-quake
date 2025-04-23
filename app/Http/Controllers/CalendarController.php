@@ -15,6 +15,15 @@ class CalendarController extends Controller
         $this->middleware('auth'); // 認証が必要なメソッドに適用
     }
 
+
+    public function index(): View
+{
+    return $this->shownew(request());
+}
+
+
+
+
     /**
      * 特定の日付のカレンダーデータを表示するメソッド
      * @param string $date
@@ -104,5 +113,6 @@ class CalendarController extends Controller
             'startDayOfWeek' => $startDayOfWeek,
             'daysInMonth' => $daysInMonth,
         ]);
+
     }
 }
