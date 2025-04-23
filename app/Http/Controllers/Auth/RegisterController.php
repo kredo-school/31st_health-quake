@@ -5,11 +5,13 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
 use Illuminate\Auth\Events\Registered;
+
 class RegisterController extends Controller
 {
     /*
@@ -59,38 +61,35 @@ class RegisterController extends Controller
      * @return \App\Models\User
      */
     protected function create(array $data)
-    {
+    { 
         return User::create([
             'name' => $data['name'],
             // 'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            
             'consecutive_days' => 0 , // 連続ログイン日数（整数）
             'level' => 1, // ユーザーのレベル（整数）
         ]);
     }
     public function store(Request $request): RedirectResponse
     {
+        
         $request->validate([
             'username' => ['required', 'string', 'max:255'],
             // 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
         $user = User::create([
             'username' => $request->username,
             // 'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
         event(new Registered($user));
+
         Auth::login($user);
+
         return redirect(route('home', absolute: false));
     }
 }
-
-
-
-
-
-
-
-
-
