@@ -1,4 +1,4 @@
-{{-- @extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -81,7 +81,7 @@
         </style>
     </head>
 <body>
-
+   
 <!-- calendar.blade.php -->
 <div class="calendar-grid">
     <div class="grid grid-cols-4 gap-2">
@@ -308,4 +308,4 @@
 
 
 
-@endsection --}}
+@endsection

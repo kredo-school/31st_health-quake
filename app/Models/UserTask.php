@@ -11,7 +11,7 @@ class UserTask extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * 一括代入可能な属性の定義
      *
      * @var array<int, string>
      */
@@ -29,7 +29,7 @@ class UserTask extends Model
     ];
 
     /**
-     * キャストする属性
+     * 型変換の定義（キャスト）
      *
      * @var array<string, string>
      */
@@ -40,7 +40,7 @@ class UserTask extends Model
     ];
 
     /**
-     * このレコードを所有するユーザーを取得
+     * 所有するユーザーを取得（リレーション）
      */
     public function user(): BelongsTo
     {
@@ -48,7 +48,7 @@ class UserTask extends Model
     }
 
     /**
-     * このレコードに関連するタスクを取得
+     * 紐づくタスクを取得（リレーション）
      */
     public function task(): BelongsTo
     {
@@ -56,7 +56,7 @@ class UserTask extends Model
     }
 
     /**
-     * このレコードに関連するルーティンを取得
+     * 紐づくルーティンを取得（リレーション）
      */
     public function routine(): BelongsTo
     {
