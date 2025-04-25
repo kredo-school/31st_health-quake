@@ -60,9 +60,9 @@ class CalendarController extends Controller
 
             // 該当日付の habit を取得
             $habits = Habit::where('user_id', $user->id)
-                ->where('date', $parsedDate->format('Y-m-d'))
+                // ->where('date', $parsedDate->format('Y-m-d'))
                 ->get();
-
+// dd( $habits);
             // 各 habit の category を配列に格納
             $categories = [];
             foreach ($habits as $habit) {
@@ -100,15 +100,15 @@ class CalendarController extends Controller
                 ];
             })->toArray();
         }
-       
+      
             return view('calendar.show', [
                 'date' => $parsedDate->format('Y-m-d'), // 日付をビューに渡す
                 'year' => $year, // 年をビューに渡す
                 'month' => $month, // 月をビューに渡す
                 'startDayOfWeek' => $startDayOfWeek, // 月初の曜日をビューに渡す
                 'habits' => $habits, // 習慣データをビューに渡す
-                'descriptions' => $descriptions,
-            ]);
+                'descriptions' => $descriptions, 
+            ]); 
         } catch (\Exception $e) {
             // 不正な日付の場合、エラーメッセージを表示
             dd($e);

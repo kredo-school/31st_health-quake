@@ -135,11 +135,20 @@
                     @else
                         @php
                             $dateStr = Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
-                            $habits = $markedHabits[$dateStr] ?? [];
+                            // $habits = $markedHabits[$dateStr] ?? [];
                             $notes = $descriptions[$dateStr] ?? [];
+                            $habit_name = null;
+                            // echo $dateStr;
+                                foreach ($habits as $habit) {
+                                    $date = \Carbon\Carbon::parse($habit['date'])->format('Y-m-d');
+                                    if ($date === $dateStr) {
+                                        $habit_name= $habit['name'];
+                                        break;
+                                    }
+                                }
                         @endphp
                         <div class="calendar-cell bg-white">
-                                <span class="date-number">{{ $dayCounter }}</span>
+                                {{$dayCounter}}<br>{{ $habit_name }}
                                 {{-- Habit category color bars --}}
                                 <div class="habit-square {{ $habits['exercise'] ?? false ? 'bg-red-400' : '' }}"></div>
                                 <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
