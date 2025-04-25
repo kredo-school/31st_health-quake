@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <!DOCTYPE html>
 <html lang="en">
@@ -67,10 +66,10 @@
             margin-bottom: 10px;
             padding: 8px 12px;
         }
-        .exercise { border-color: #ef4444; }
-        .nutrition { border-color: #36db96; }
-        .sleep { border-color: #3b82f6; }
-        .other { border-color: #a855f7; }
+        .exercise { border-color: #EF4444; }
+        .nutrition { border-color: #36DB96; }
+        .sleep { border-color: #3B82F6; }
+        .other { border-color: #A855F7; }
     </style>
 </head>
 <body>
@@ -80,7 +79,7 @@
                 <div class="for-example">for example:</div>
                 <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
                     <div class="category-header bg-red-400 text-white">Exercise</div>
-                    <div class="category-item exercise">🏃‍♂️ Running</div>
+                        <div class="category-item exercise">🏃‍♂️ Running</div>
                     <div class="category-item exercise">💪 Strength Training</div>
                     <div class="category-item exercise">🧘 Yoga</div>
                 </div>
@@ -101,7 +100,6 @@
                     <div class="category-item other">🧠 Meditation</div>
                 </div>
             </div>
-
             <section class="bg-white rounded-lg shadow-sm p-6 mb-8 md:col-span-4">
                 <div class="flex space-x-4 mb-8">
                     <div class="flex items-center"><div class="habit-icon bg-red-400 mr-1"></div><span class="text-sm">Exercise</span></div>
@@ -109,7 +107,6 @@
                     <div class="flex items-center"><div class="habit-icon bg-blue-400 mr-1"></div><span class="text-sm">Sleep</span></div>
                     <div class="flex items-center"><div class="habit-icon bg-purple-400 mr-1"></div><span class="text-sm">Other</span></div>
                 </div>
-
                 <div class="flex justify-between items-center mb-6">
                     @php
                         use Carbon\Carbon;
@@ -124,7 +121,6 @@
                     <h2 class="text-2xl font-semibold text-gray-800">{{ $current->format('F Y') }}</h2>
                     <a href="{{ route('calendar.show', ['date' => $next->format('Y-m-d')]) }}" class="text-blue-600 hover:underline">{{ $next->format('F Y') }} →</a>
                 </div>
-
                 <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
                     <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
                 </div>
@@ -134,38 +130,35 @@
                         $totalCells = ceil(($startDayOfWeek + $daysInMonth) / 7) * 7;
                     @endphp
                     @for ($i = 0; $i < $totalCells; $i++)
-                        @if ($i < $startDayOfWeek || $dayCounter > $daysInMonth)
-                            <div class="calendar-cell bg-gray-100"></div>
-                        @else
-                            @php
-                                $dateStr = Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
-                                $habits = $markedHabits[$dateStr] ?? [];
-                                $notes = $descriptions[$dateStr] ?? [];
-                            @endphp
-                            <div class="calendar-cell bg-white">
+                    @if ($i < $startDayOfWeek || $dayCounter > $daysInMonth)
+                        <div class="calendar-cell bg-gray-100"></div>
+                    @else
+                        @php
+                            $dateStr = Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
+                            $habits = $markedHabits[$dateStr] ?? [];
+                            $notes = $descriptions[$dateStr] ?? [];
+                        @endphp
+                        <div class="calendar-cell bg-white">
                                 <span class="date-number">{{ $dayCounter }}</span>
+                                {{-- Habit category color bars --}}
                                 <div class="habit-square {{ $habits['exercise'] ?? false ? 'bg-red-400' : '' }}"></div>
                                 <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
                                 <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
                                 <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
-                                @foreach ($notes as $note)
-                                    @php
-                                        $categoryColorMap = [
-                                            'exercise' => 'bg-red-400',
-                                            'nutrition' => 'bg-green-400',
-                                            'sleep' => 'bg-blue-400',
-                                            'other' => 'bg-purple-400'
-                                        ];
-                                        $color = $categoryColorMap[$note['category']] ?? 'bg-gray-300';
-                                    @endphp
-                                    <div class="mt-1 text-xs text-gray-800 px-1 py-1 rounded {{ $color }}">
-                                        {{ $note['text'] }}
+                                {{-- Descriptions --}}
+                                @if (!empty($descriptions[$dateStr]))
+                                    <div class="mt-1 text-xs space-y-1 overflow-y-auto max-h-16">
+                                        @foreach ($descriptions[$dateStr] as $desc)
+                                            <div class="px-1 py-0.5 rounded" style="background-color: {{ $desc['color'] }};">
+                                                {{ $desc['text'] }}
+                                            </div>
+                                        @endforeach
                                     </div>
-                                @endforeach
+                                @endif
                             </div>
-                            @php $dayCounter++; @endphp
-                        @endif
-                    @endfor
+                        @php $dayCounter++; @endphp
+                    @endif
+                @endfor
                 </div>
             </section>
         </div>

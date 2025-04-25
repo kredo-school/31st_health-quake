@@ -108,20 +108,16 @@ class TimerController extends Controller
         }
 
         // 重複チェック後にHabitも作成
-        $exists = Habit::where('user_id', $userId)
-            ->where('name', $request->name)
-            ->where('category', $request->category)
-            ->whereDate('date', $today)
-            ->exists();
-
-        if (!$exists) {
-            Habit::create([
-                'user_id' => $userId,
-                'name' => $request->name,
-                'category' => $request->category,
-                'date' => $today,
-            ]);
-        }
+        $habit = Habit::where('user_id', $userId)
+    ->where('name', $request->name)
+    ->where('category', $request->category)
+    // ->whereDate('date', $today)
+    ->first();
+if ($habit) {
+    $habit->is_completed = 1;
+    $habit->last_completed = now(); // or use Carbon::now()
+    $habit->save();
+}
 
         return redirect()->route('calendar.show', ['date' => $today]);
     }

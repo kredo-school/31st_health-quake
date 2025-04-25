@@ -15,19 +15,39 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\RoutineController;
 use App\Http\Controllers\UserLevelController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\CalendarControllernew;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\TimerController;
 use App\Http\Controllers\RewardsController;
+use App\Http\Controllers\AdminController;
 
 // 認証ルート（Laravel BreezeやFortifyなどが生成するもの）
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+
+// ------------------------------------------------------
+// 🌐 公開ルート（認証不要）
+// ------------------------------------------------------
+Route::middleware([])->group(function () {
+    // ホームページ
+    Route::get('/', fn () => Auth::check() ? redirect()->route('home') : view('welcome'))->name('home');
+
+    // 認証関係
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/registernew', [RegisterController::class, 'store'])->name('registernew');
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+
+    // registernew に GET で来たら register にリダイレクト
+    Route::get('/registernew', fn () => redirect()->route('register'));
+});
 
 // ------------------------------------------------------
 // 🔒 認証が必要なルート（authミドルウェア適用）
 // ------------------------------------------------------
 Route::middleware(['auth'])->group(function () {
-    // ✅ プロフィール関連（route('profile') も動くよう明示）
+    // ダッシュボード
+    Route::get('/home', fn () => view('welcome_login'))->name('home');
+
+    // プロフィール関連
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -83,33 +103,30 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('rewards.edit');
     Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
     Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
+
+    // API
+    Route::get('/api/tasks/{year}/{month}', [TaskController::class, 'getTasks']);
 });
 
 // ------------------------------------------------------
-// 🌐 公開ルート
+// 🔐 Admin 専用ルート（認証と管理者権限が必要）
 // ------------------------------------------------------
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+    // Admin ダッシュボード
+    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-// ホームページ
-Route::get('/', function () {
-    return Auth::check() ? redirect()->route('home') : view('welcome');
-})->name('home');
+    // ユーザー管理
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
 
-// 認証後のダッシュボード
-Route::get('/home', fn () => view('welcome_login'))->middleware(['auth', 'verified'])->name('home');
+    // ログインペナルティ設定
+    Route::get('/login_penalties', [AdminController::class, 'loginPenalties'])->name('admin.login_penalties');
+    Route::post('/login_penalties/update', [AdminController::class, 'updateLoginPenalties'])->name('admin.login_penalties.update');
 
-// 認証関係
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('registernew', [RegisterController::class, 'store'])->name('registernew');
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
+    // カテゴリ管理
+    Route::get('/categories', [AdminController::class, 'categories'])->name('admin.categories');
+    Route::post('/categories/update', [AdminController::class, 'updateCategories'])->name('admin.categories.update');
+});
 
-// ログアウト処理（GET or POST どちらでも対応）
+// ログアウト処理
 Route::post('/logout', fn () => tap(auth()->logout(), fn () => redirect('/')))->name('logout');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// API
-Route::get('/api/tasks/{year}/{month}', [TaskController::class, 'getTasks']);
-
-// registernew に GET で来たら register にリダイレクト
-Route::get('registernew', fn () => redirect()->route('register'));
-

@@ -72,6 +72,7 @@ class CalendarController extends Controller
             // 月初の日付を生成
             $startOfMonth = Carbon::create($year, $month, 1);
             $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
+           
             $habits1 = Habit::where('user_id', $user->id)
             ->whereYear('date', $year)
             ->whereMonth('date', $month)
@@ -90,6 +91,7 @@ class CalendarController extends Controller
             'bg-emerald-300',
         ];
         $descriptions = [];
+       
         foreach ($habits1 as $date => $habitGroup) {
             $descriptions[$date] = $habitGroup->map(function ($habit) use ($colors) {
                 return [
@@ -98,6 +100,7 @@ class CalendarController extends Controller
                 ];
             })->toArray();
         }
+       
             return view('calendar.show', [
                 'date' => $parsedDate->format('Y-m-d'), // 日付をビューに渡す
                 'year' => $year, // 年をビューに渡す

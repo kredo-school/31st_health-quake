@@ -35,8 +35,7 @@ class UserTask extends Model
      */
     protected $casts = [
         'scheduled_time' => 'datetime',
-        'last_completed_at' => 'datetime',
-        'is_completed' => 'boolean',
+        
     ];
 
     /**
