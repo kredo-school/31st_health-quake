@@ -1,50 +1,19 @@
-/* dashboard_4.css */
 body {
-    background-image: url('/images/background_4.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    font-family: Arial, sans-serif;
-    color: white;
-    margin: 0;
-    padding: 0;
-}
-
-.main-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 60px); /* ナビバーの高さを引く */
-}
-
-.container {
-    text-align: center;
-    max-width: 900px;
-    padding: 20px;
-}
-
-h1 {
-    font-size: 24px;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-.author {
-    font-size: 16px;
-    opacity: 0.8;
-    margin-bottom: 30px;
-}
-
-.continue-btn {
-    color: #2196F3;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    display: inline-block;
-}
-
-.continue-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
+    background-image: url('/images/background_4.png');/* 背景画像のパスを指定 */
+            background-size: cover;
+            background-position: center;
+            /* color: white; */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0; 
+        }
+        .container {
+            text-align: center;
+            color: white; 
+        }
+        .logo {
+            width: 200px; /* ロゴのサイズを調整 */
+        }

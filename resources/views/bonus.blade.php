@@ -1,18 +1,15 @@
 <!-- resources/views/bonus.blade.php -->
 @extends('layouts.app')
-
 @section('content')
-<div class="container mx-auto px-4 py-12 text-center" style="background-color: #e0f7fa; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);">
+<div class="container mx-auto px-4 py-12 text-center" style="background-color: #E0F7FA; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);">
     <div class="mb-10">
         <h4 class="text-lg font-semibold text-gray-800" style="letter-spacing: 1px;">CONSECUTIVE DAYS WITH LOGGING IN :</h4>
         <h3 class="text-4xl font-bold text-gray-800 mt-2" style="letter-spacing: 2px;">3 DAYS</h3>
     </div>
-
     <div class="mb-10">
-        <h2 class="text-3xl font-bold" style="color: #ff7043; font-family: 'Poppins', sans-serif;">YOU'RE DOING GREAT!</h2>
-        <h3 class="text-xl mt-3" style="color: #ff7043; letter-spacing: 0.5px;">HERE'S A BONUS FOR LOGGING IN THREE DAYS IN A ROW</h3>
+        <h2 class="text-3xl font-bold" style="color: #FF7043; font-family: 'Poppins', sans-serif;">YOU'RE DOING GREAT!</h2>
+        <h3 class="text-xl mt-3" style="color: #FF7043; letter-spacing: 0.5px;">HERE'S A BONUS FOR LOGGING IN THREE DAYS IN A ROW</h3>
     </div>
-
     <!-- Centered star with click functionality -->
     <div class="flex justify-center items-center my-12">
         <a href="{{ route('bonus.paper') }}" class="bonus-star-container">
@@ -22,15 +19,12 @@
         </a>
     </div>
 </div>
-
 <!-- Add custom fonts and styles -->
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
     .container {
         font-family: 'Poppins', sans-serif;
     }
-
     /* Create a custom star with bonus ribbon */
     .bonus-star-container {
         position: relative;
@@ -73,7 +67,7 @@
         bottom: -40px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: #29b6f6;
+        background-color: #29B6F6;
         color: white;
         font-weight: bold;
         padding: 8px 16px;
@@ -104,39 +98,32 @@
     .bonus-star-container:hover {
         transform: scale(1.1) rotate(5deg);
     }
-
     .bonus-star-container:hover .click-text {
-        background-color: #1e88e5;
+        background-color: #1E88E5;
         transform: translateX(-50%) scale(1.1);
         box-shadow: 0 4px 10px rgba(41, 182, 246, 0.6);
     }
-
     .bonus-star-container:active {
         transform: scale(0.95);
     }
-
     /* Add a pulsing animation */
     @keyframes pulse {
         0% { transform: scale(1); }
         50% { transform: scale(1.05); }
         100% { transform: scale(1); }
     }
-
     .bonus-star-container {
         animation: pulse 2s infinite;
     }
-
     /* Smaller pulse for "PLEASE CLICK HERE" text */
     @keyframes textPulse {
         0% { transform: translateX(-50%) scale(1); }
         50% { transform: translateX(-50%) scale(1.05); }
         100% { transform: translateX(-50%) scale(1); }
     }
-
     .click-text {
         animation: textPulse 2s infinite;
     }
-
     /* Stop the pulsing animation on hover to prevent conflict with hover animation */
     .bonus-star-container:hover {
         animation: none;
@@ -163,19 +150,15 @@
                 const distance = 70 + Math.random() * 40;
                 const posX = Math.cos(angle) * distance;
                 const posY = Math.sin(angle) * distance;
-
                 sparkle.style.left = `calc(50% + ${posX}px)`;
                 sparkle.style.top = `calc(50% + ${posY}px)`;
-
                 // Random size
                 const size = 3 + Math.random() * 7;
                 sparkle.style.width = `${size}px`;
                 sparkle.style.height = `${size}px`;
-
                 // Random color (gold/yellow variations)
                 const hue = 40 + Math.random() * 20;
                 sparkle.style.backgroundColor = `hsl(${hue}, 100%, 65%)`;
-
                 // Add to container
                 this.appendChild(sparkle);
             }
@@ -204,11 +187,9 @@
             opacity: 0;
         }
     }
-
     .clicked .bonus-star {
         animation: starClickEffect 0.5s;
     }
-
     @keyframes starClickEffect {
         0% { transform: scale(1); }
         50% { transform: scale(0.85); }

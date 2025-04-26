@@ -70,7 +70,7 @@
             margin-bottom: 10px;
             padding: 8px 12px;
         }
-        .exercise { border-color: #EF4444; }
+        .exercise { border-color: #EF4444; } 
         .nutrition { border-color: #84CC16; }
         .sleep { border-color: #3B82F6; }
         .other { border-color: #A855F7; }
@@ -78,6 +78,14 @@
 </head>
 <body>
 <main class="container mx-auto px-4 py-6">
+    @php
+    use Carbon\Carbon; // Carbonをインポート
+    $year = $year ?? now()->year; // 未定義の場合、現在の年を使用
+    $month = $month ?? now()->month; // 未定義の場合、現在の月を使用
+    $startDayOfWeek = $startDayOfWeek ?? Carbon::create($year, $month, 1)->dayOfWeek;
+    $daysInMonth = $daysInMonth ?? Carbon::create($year, $month, 1)->daysInMonth;
+    $markedHabits = $markedHabits ?? [];
+@endphp
     <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
         <!-- Left Panel (Examples) -->
         <div class="md:col-span-1">
@@ -144,7 +152,7 @@
                         @php
                             $dateStr = \Carbon\Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
                             $habits = $markedHabits[$dateStr] ?? [];
-                            $notes = $descriptions[$dateStr] ?? [];
+                            // $notes = $descriptions[$dateStr] ?? [];
                         @endphp
                         <div class="calendar-cell bg-white">
                             <span class="date-number">{{ $dayCounter }}</span>
@@ -152,11 +160,11 @@
                             <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
                             <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
                             <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
-                            @foreach ($notes as $note)
+                            {{-- @foreach ($notes as $note)
                                 <div class="mt-1 text-xs text-gray-800 px-1 py-1 rounded {{ $note['color'] }}">
                                     {{ $note['text'] }}
                                 </div>
-                            @endforeach
+                            @endforeach --}}
                         </div>
                         @php $dayCounter++; @endphp
                     @endif

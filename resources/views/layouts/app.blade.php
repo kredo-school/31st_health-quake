@@ -8,7 +8,6 @@
     <!-- Tailwind CSS -->
     @vite('resources/css/app.css') 
     @yield('css') 
-
 </head>
 <body class="bg-teal font-sans antialiased">
 

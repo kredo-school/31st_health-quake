@@ -32,7 +32,7 @@
     </style>
 </head>
 <body class="min-h-screen pb-10">
-
+ 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <div class="text-center mb-8">

@@ -13,10 +13,12 @@
             font-family: Arial, sans-serif;
             background-color: #E0F7FA;
             padding-top: 60px; /* ナビゲーションバーの高さ分の余白 */
+        }
+        body {
             overflow: auto; /* 必要に応じてスクロールを有効化 */
         }
         main {
-            margin-top: 420px; /* ナビゲーションバーの高さ分の余白 */
+            margin-top: 420px;
         }
         .habit-icon {
             width: 24px;
@@ -71,7 +73,7 @@
             border-color: #ef4444;
         }
         .nutrition {
-            border-color: #36db96;
+            border-color: #84cc16;
         }
         .sleep {
             border-color: #3b82f6;
@@ -82,10 +84,8 @@
     </style>
 </head>
 <body>
-    <!-- Main Content -->
     <main class="container mx-auto px-4 py-6">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <!-- Category Panel (Left Side) -->
             <div class="md:col-span-1">
                 <div class="for-example">for example:</div>
                 <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
@@ -112,9 +112,7 @@
                 </div>
             </div>
 
-            <!-- Right Panel (Calendar) -->
             <section class="bg-white rounded-lg shadow-sm p-6 mb-8 md:col-span-4">
-                <!-- Legend -->
                 <div class="flex space-x-4 mb-8">
                     <div class="flex items-center"><div class="habit-icon bg-red-400 mr-1"></div><span class="text-sm">Exercise</span></div>
                     <div class="flex items-center"><div class="habit-icon bg-green-400 mr-1"></div><span class="text-sm">Nutrition</span></div>
@@ -122,59 +120,49 @@
                     <div class="flex items-center"><div class="habit-icon bg-purple-400 mr-1"></div><span class="text-sm">Other</span></div>
                 </div>
 
-                <!-- Navigation -->
                 <div class="flex justify-between items-center mb-6">
                     @php
                         use Carbon\Carbon;
                         $current = Carbon::create($year ?? now()->year, $month ?? now()->month, 1);
                         $prev = $current->copy()->subMonth();
                         $next = $current->copy()->addMonth();
-                        $startOfMonth = Carbon::create($year, $month, 1);
+                    @endphp
+                    <a href="{{ route('calendar.show', ['date' => $prev->format('Y-m-d')]) }}" class="text-blue-600 hover:underline">← {{ $prev->format('F Y') }}</a>
+                    <h2 class="text-2xl font-semibold text-gray-800">{{ $current->format('F Y') }}</h2>
+                    <a href="{{ route('calendar.show', ['date' => $next->format('Y-m-d')]) }}" class="text-blue-600 hover:underline">{{ $next->format('F Y') }} →</a>
+                </div>
+
+                <!-- Calendar -->
+                <div class="calendar">
+                    <!-- Days of Week -->
+                    <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
+                        <div>SUN</div>
+                        <div>MON</div>
+                        <div>TUE</div>
+                        <div>WED</div>
+                        <div>THU</div>
+                        <div>FRI</div>
+                        <div>SAT</div>
+                    </div>
+
+                    @php
+                        $startOfMonth = \Carbon\Carbon::create($year, $month, 1);
+                        $endOfMonth = $startOfMonth->copy()->endOfMonth();
                         $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
                         $daysInMonth = $startOfMonth->daysInMonth;
                     @endphp
-                    <a href="{{ route('calendar.show', ['date' => $prev->format('Y-m-d')]) }}"
-                       class="text-blue-600 hover:underline">← {{ $prev->format('F Y') }}</a>
-                    <h2 class="text-2xl font-semibold text-gray-800">{{ $current->format('F Y') }}</h2>
-                    <a href="{{ route('calendar.show', ['date' => $next->format('Y-m-d')]) }}"
-                       class="text-blue-600 hover:underline">{{ $next->format('F Y') }} →</a>
-                </div>
 
-                <!-- Calendar Grid -->
-                <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
-                    <div>SUN</div>
-                    <div>MON</div>
-                    <div>TUE</div>
-                    <div>WED</div>
-                    <div>THU</div>
-                    <div>FRI</div>
-                    <div>SAT</div>
-                </div>
-                <div class="grid grid-cols-7 gap-2">
-                    @php
-                        $dayCounter = 1;
-                        $totalCells = ceil(($startDayOfWeek + $daysInMonth) / 7) * 7;
-                    @endphp
-                    @for ($i = 0; $i < $totalCells; $i++)
-                        @if ($i < $startDayOfWeek || $dayCounter > $daysInMonth)
-                            <div class="calendar-cell bg-gray-100"></div>
-                        @else
-                            @php
-                                $dateStr = Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
-                                $habits = $markedHabits[$dateStr] ?? [];
-                                $notes = $descriptions[$dateStr] ?? [];
-                            @endphp
-                            <div class="calendar-cell bg-white">
-                                <span class="date-number">{{ $dayCounter }}</span>
-                                <div class="habit-square {{ $habits['exercise'] ?? false ? 'bg-red-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
-                                @foreach ($notes as $note)
-                                <div class="mt-1 text-xs text-gray-800 px-1 py-1 rounded {{ $note['color'] }}">
-                                    {{ $note['text'] }}
-                                </div>
-                            @endforeach
+                    <!-- Weeks -->
+                    <div class="grid grid-cols-7 gap-2">
+                        <!-- Empty cells before the first day -->
+                        @for ($i = 0; $i < $startDayOfWeek; $i++)
+                            <div></div>
+                        @endfor
+
+                        <!-- Days of the month -->
+                        @for ($day = 1; $day <= $daysInMonth; $day++)
+                            <div class="calendar-cell">
+                                <span class="date-number">{{ $day }}</span>
                             </div>
                             @php $dayCounter++; @endphp
                         @endif
@@ -185,4 +173,4 @@
     </main>
 </body>
 </html>
-@endsection 
+@endsection

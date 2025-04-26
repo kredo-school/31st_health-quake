@@ -12,6 +12,7 @@ body {
         }
         .container {
             text-align: center;
+            color: dark; 
         }
         .logo {
             width: 200px; /* ロゴのサイズを調整 */

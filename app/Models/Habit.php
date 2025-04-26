@@ -9,7 +9,12 @@ class Habit extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'category', 'date', 'user_id']; // 全ての必要フィールドを指定
+    protected $fillable = ['name', 'category', 'date', 'user_id'];
+
+    // 🔽 ここを追加：日付カラムをCarbonオブジェクトとして扱う
+    protected $casts = [
+        'date' => 'date',
+    ];
 
     // ユーザーとのリレーション
     public function user()
