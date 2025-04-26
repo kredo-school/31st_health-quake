@@ -70,6 +70,7 @@
         .nutrition { border-color: #36DB96; }
         .sleep { border-color: #3B82F6; }
         .other { border-color: #A855F7; }
+
     </style>
 </head>
 <body>
@@ -149,11 +150,12 @@
                         @endphp
                         <div class="calendar-cell bg-white">
                                 {{$dayCounter}}<br>{{ $habit_name }}
-                                {{-- Habit category color bars --}}
-                                <div class="habit-square {{ $habits['exercise'] ?? false ? 'bg-red-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
+                                 <!-- Habit category color bars -->
+                                 <div class="habit-square {{ $habits['exercise'] ?? false ? 'bg-red-400' : '' }}"></div>
+                                 <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
+                                 <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
+                                 <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
+                                
                                 {{-- Descriptions --}}
                                 @if (!empty($descriptions[$dateStr]))
                                     <div class="mt-1 text-xs space-y-1 overflow-y-auto max-h-16">
