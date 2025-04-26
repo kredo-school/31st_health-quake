@@ -87,3 +87,12 @@ body {
     height: 30px;
     border-radius: 4px;
 }
+.date-number {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    z-index: 10;
+}
+

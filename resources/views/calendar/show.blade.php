@@ -130,44 +130,58 @@
                         $totalCells = ceil(($startDayOfWeek + $daysInMonth) / 7) * 7;
                     @endphp
                     @for ($i = 0; $i < $totalCells; $i++)
-                    @if ($i < $startDayOfWeek || $dayCounter > $daysInMonth)
-                        <div class="calendar-cell bg-gray-100"></div>
-                    @else
-                        @php
-                            $dateStr = Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
-                            // $habits = $markedHabits[$dateStr] ?? [];
-                            $notes = $descriptions[$dateStr] ?? [];
-                            $habit_name = null;
-                            // echo $dateStr;
+                        @if ($i < $startDayOfWeek || $dayCounter > $daysInMonth)
+                            <div class="calendar-cell bg-gray-100"></div>
+                        @else
+                            @php
+                                $dateStr = Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
+
+                                // 日付ごとの習慣を取得
+                                $dayHabits = [];
                                 foreach ($habits as $habit) {
-                                    $date = \Carbon\Carbon::parse($habit['date'])->format('Y-m-d');
-                                    if ($date === $dateStr) {
-                                        $habit_name= $habit['name'];
-                                        break;
+                                    if (isset($habit->date)) {
+                                        $habitDate = $habit->date instanceof Carbon
+                                            ? $habit->date->format('Y-m-d')
+                                            : Carbon::parse($habit->date)->format('Y-m-d');
+
+                                        if ($habitDate === $dateStr) {
+                                            $color = '';
+                                            if ($habit->category == 'exercise' || $habit->category == 'Exercise Category') {
+                                                $color = 'bg-red-400';
+                                            } elseif ($habit->category == 'nutrition' || $habit->category == 'Nutrition Category') {
+                                                $color = 'bg-green-400';
+                                            } elseif ($habit->category == 'sleep' || $habit->category == 'Sleep Category') {
+                                                $color = 'bg-blue-400';
+                                            } elseif ($habit->category == 'other' || $habit->category == 'Other Categories') {
+                                                $color = 'bg-purple-400';
+                                            } else {
+                                                $color = 'bg-gray-300';
+                                            }
+                                            $dayHabits[] = [
+                                                'name' => $habit->name,
+                                                'color' => $color
+                                            ];
+                                        }
                                     }
                                 }
-                        @endphp
-                        <div class="calendar-cell bg-white">
-                                {{$dayCounter}}<br>{{ $habit_name }}
-                                {{-- Habit category color bars --}}
-                                <div class="habit-square {{ $habits['exercise'] ?? false ? 'bg-red-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['nutrition'] ?? false ? 'bg-green-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['sleep'] ?? false ? 'bg-blue-400' : '' }}"></div>
-                                <div class="habit-square {{ $habits['other'] ?? false ? 'bg-purple-400' : '' }}"></div>
-                                {{-- Descriptions --}}
-                                @if (!empty($descriptions[$dateStr]))
-                                    <div class="mt-1 text-xs space-y-1 overflow-y-auto max-h-16">
-                                        @foreach ($descriptions[$dateStr] as $desc)
-                                            <div class="px-1 py-0.5 rounded" style="background-color: {{ $desc['color'] }};">
-                                                {{ $desc['text'] }}
+                            @endphp
+                            <div class="calendar-cell bg-white">
+                                <span class="date-number">{{$dayCounter}}</span>
+
+                                {{-- 日付に関連する習慣を直接表示 --}}
+                                @if (count($dayHabits) > 0)
+                                    <div class="mt-5 text-xs space-y-1 overflow-y-auto max-h-16">
+                                        @foreach ($dayHabits as $habit)
+                                            <div class="px-1 py-0.5 rounded text-white {{ $habit['color'] }}">
+                                                {{ $habit['name'] }}
                                             </div>
                                         @endforeach
                                     </div>
                                 @endif
                             </div>
-                        @php $dayCounter++; @endphp
-                    @endif
-                @endfor
+                            @php $dayCounter++; @endphp
+                        @endif
+                    @endfor
                 </div>
             </section>
         </div>

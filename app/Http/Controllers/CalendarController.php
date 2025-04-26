@@ -49,7 +49,7 @@ class CalendarController extends Controller
             $parsedDate = Carbon::parse($date);
 
             // 年と月を取得
-            $year = $parsedDate->year; 
+            $year = $parsedDate->year;
             $month = $parsedDate->month;
 
             // ログイン中のユーザーを取得
@@ -60,55 +60,61 @@ class CalendarController extends Controller
 
             // 該当日付の habit を取得
             $habits = Habit::where('user_id', $user->id)
-                // ->where('date', $parsedDate->format('Y-m-d'))
                 ->get();
-// dd( $habits);
-            // 各 habit の category を配列に格納
-            $categories = [];
-            foreach ($habits as $habit) {
-                $categories[$habit->category] = true;
-            }
 
             // 月初の日付を生成
             $startOfMonth = Carbon::create($year, $month, 1);
             $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
-           
+
+            // その月の habit を取得（年と月で絞り込み）
             $habits1 = Habit::where('user_id', $user->id)
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->get()
-            ->groupBy('date');
-        $colors = [
-            'bg-yellow-300',
-            'bg-pink-300',
-            'bg-red-300',
-            'bg-blue-300',
-            'bg-green-200',
-            'bg-purple-200',
-            'bg-indigo-300',
-            'bg-orange-300',
-            'bg-teal-200',
-            'bg-emerald-300',
-        ];
-        $descriptions = [];
-       
-        foreach ($habits1 as $date => $habitGroup) {
-            $descriptions[$date] = $habitGroup->map(function ($habit) use ($colors) {
-                return [
+                ->whereYear('date', $year)
+                ->whereMonth('date', $month)
+                ->get();
+
+            // 日付ごとに習慣を整理
+            $descriptions = [];
+
+            // 各習慣を処理
+            foreach ($habits1 as $habit) {
+                $dateStr = $habit->date->format('Y-m-d');
+
+                // カテゴリに基づいて色を決定
+                $color = '';
+                if ($habit->category == 'exercise' || $habit->category == 'Exercise Category') {
+                    $color = 'bg-red-400';  // Exerciseは赤
+                } elseif ($habit->category == 'nutrition' || $habit->category == 'Nutrition Category') {
+                    $color = 'bg-green-400';  // Nutritionは緑
+                } elseif ($habit->category == 'sleep' || $habit->category == 'Sleep Category') {
+                    $color = 'bg-blue-400';  // Sleepは青
+                } elseif ($habit->category == 'other' || $habit->category == 'Other Categories') {
+                    $color = 'bg-purple-400';  // Otherは紫
+                } else {
+                    // デフォルトの色
+                    $color = 'bg-gray-300';
+                }
+
+                if (!isset($descriptions[$dateStr])) {
+                    $descriptions[$dateStr] = [];
+                }
+
+                $descriptions[$dateStr][] = [
                     'text' => $habit->name,
-                    'color' => $colors[array_rand($colors)],
+                    'color' => $color,
                 ];
-            })->toArray();
-        }
-      
+            }
+
+            // デバッグ用
+            // dd($descriptions);
+
             return view('calendar.show', [
                 'date' => $parsedDate->format('Y-m-d'), // 日付をビューに渡す
                 'year' => $year, // 年をビューに渡す
                 'month' => $month, // 月をビューに渡す
                 'startDayOfWeek' => $startDayOfWeek, // 月初の曜日をビューに渡す
                 'habits' => $habits, // 習慣データをビューに渡す
-                'descriptions' => $descriptions, 
-            ]); 
+                'descriptions' => $descriptions,
+            ]);
         } catch (\Exception $e) {
             // 不正な日付の場合、エラーメッセージを表示
             dd($e);
