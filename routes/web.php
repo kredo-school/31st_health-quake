@@ -40,12 +40,29 @@ Route::middleware([])->group(function () {
     Route::get('/registernew', fn () => redirect()->route('register'));
 });
 
+Route::get('/home', function () {
+    // 表示するビューファイルの配列を定義
+    $views = [
+        'welcome_login',    // resources/views/welcome_login.blade.php
+        'welcome_login_3',   // resources/views/welcome_login3.blade.php
+        'welcome_login_4',   // resources/views/welcome_login4.blade.php
+        'welcome_login_5',    // resources/views/welcome_login5.blade.php
+
+    ];
+
+    // 配列からランダムに1つのビューを選択
+    $randomView = $views[array_rand($views)];
+
+    // 選択されたビューを表示
+    return view($randomView);
+})->middleware(['auth', 'verified'])->name('home');
+
 // ------------------------------------------------------
 // 🔒 認証が必要なルート（authミドルウェア適用）
 // ------------------------------------------------------
 Route::middleware(['auth'])->group(function () {
     // ダッシュボード
-    Route::get('/home', fn () => view('welcome_login'))->name('home');
+    // Route::get('/home', fn () => view('welcome_login'))->name('home');
 
     // プロフィール関連
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
