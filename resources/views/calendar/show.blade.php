@@ -11,8 +11,10 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #E0F7FA;
-            padding-top: 60px;
-            overflow: auto;
+            padding-top: 60px; /* ナビゲーションバーの高さ分の余白 */
+        }
+        body {
+            overflow: auto; /* 必要に応じてスクロールを有効化 */
         }
         main {
             margin-top: 420px;
@@ -60,17 +62,32 @@
             border-left: 4px solid;
             color: #666;
         }
-        .for-example {
+        .for-example { 
             font-style: italic;
             color: #888;
             margin-bottom: 10px;
             padding: 8px 12px;
         }
+<<<<<<< HEAD
         .exercise { border-color: #EF4444; }
         .nutrition { border-color: #36DB96; }
         .sleep { border-color: #3B82F6; }
         .other { border-color: #A855F7; }
 
+=======
+        .exercise {
+            border-color: #ef4444;
+        }
+        .nutrition {
+            border-color: #84cc16;
+        }
+        .sleep {
+            border-color: #3b82f6;
+        }
+        .other {
+            border-color: #a855f7;
+        }
+>>>>>>> Makoto_2
     </style>
 </head>
 <body>
@@ -114,22 +131,39 @@
                         $current = Carbon::create($year ?? now()->year, $month ?? now()->month, 1);
                         $prev = $current->copy()->subMonth();
                         $next = $current->copy()->addMonth();
-                        $startOfMonth = Carbon::create($year, $month, 1);
-                        $startDayOfWeek = $startOfMonth->dayOfWeek;
-                        $daysInMonth = $startOfMonth->daysInMonth;
                     @endphp
                     <a href="{{ route('calendar.show', ['date' => $prev->format('Y-m-d')]) }}" class="text-blue-600 hover:underline">← {{ $prev->format('F Y') }}</a>
                     <h2 class="text-2xl font-semibold text-gray-800">{{ $current->format('F Y') }}</h2>
                     <a href="{{ route('calendar.show', ['date' => $next->format('Y-m-d')]) }}" class="text-blue-600 hover:underline">{{ $next->format('F Y') }} →</a>
                 </div>
+<<<<<<< HEAD
                 <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
                     <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
                 </div>
                 <div class="grid grid-cols-7 gap-2">
+=======
+
+                <!-- Calendar -->
+                <div class="calendar">
+                    <!-- Days of Week -->
+                    <div class="grid grid-cols-7 gap-2 mb-2 text-center text-sm text-gray-500">
+                        <div>SUN</div>
+                        <div>MON</div>
+                        <div>TUE</div>
+                        <div>WED</div>
+                        <div>THU</div>
+                        <div>FRI</div>
+                        <div>SAT</div>
+                    </div>
+
+>>>>>>> Makoto_2
                     @php
-                        $dayCounter = 1;
-                        $totalCells = ceil(($startDayOfWeek + $daysInMonth) / 7) * 7;
+                        $startOfMonth = \Carbon\Carbon::create($year, $month, 1);
+                        $endOfMonth = $startOfMonth->copy()->endOfMonth();
+                        $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
+                        $daysInMonth = $startOfMonth->daysInMonth;
                     @endphp
+<<<<<<< HEAD
                     @for ($i = 0; $i < $totalCells; $i++)
                     @if ($i < $startDayOfWeek || $dayCounter > $daysInMonth)
                         <div class="calendar-cell bg-gray-100"></div>
@@ -166,6 +200,20 @@
                                         @endforeach
                                     </div>
                                 @endif
+=======
+
+                    <!-- Weeks -->
+                    <div class="grid grid-cols-7 gap-2">
+                        <!-- Empty cells before the first day -->
+                        @for ($i = 0; $i < $startDayOfWeek; $i++)
+                            <div></div>
+                        @endfor
+
+                        <!-- Days of the month -->
+                        @for ($day = 1; $day <= $daysInMonth; $day++)
+                            <div class="calendar-cell">
+                                <span class="date-number">{{ $day }}</span>
+>>>>>>> Makoto_2
                             </div>
                         @php $dayCounter++; @endphp
                     @endif

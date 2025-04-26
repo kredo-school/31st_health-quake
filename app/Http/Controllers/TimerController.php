@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Habit;
-use App\Models\UserTask;
 use Illuminate\Support\Facades\Auth;
 
 class TimerController extends Controller
@@ -89,8 +88,14 @@ class TimerController extends Controller
 
     public function done(Request $request)
     {
-        $userId = Auth::id();
-        $today = Carbon::now()->toDateString();
+    
+        Habit::create([
+            'user_id' => Auth::id(),
+             'name' => $request['name'],
+            'category' => $request['category'],
+            'date' => Carbon::now()->format('Y-m-d') , 
+        ]);
+    
 
         // UserTaskを完了済みにする（最も新しい一致する未完了のタスクを対象）
         $userTask = \App\Models\UserTask::where('user_id', $userId)

@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Storage;
 
 class RegisterController extends Controller
 {
@@ -40,48 +39,25 @@ class RegisterController extends Controller
     }
 
     protected function create(array $data)
-    {
+    { 
         return User::create([
             'name' => $data['name'],
             'password' => Hash::make($data['password']),
-            'consecutive_days' => 0,
-            'level' => 1,
+            
+            'consecutive_days' => 0 , // 連続ログイン日数（整数）
+            'level' => 1, // ユーザーのレベル（整数）
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        // if ($request->hasFile('profile_photo')) {
-        //     $file = $request->file('profile_photo');
-        //     // Use storeAs for full control
-        //     $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-        //     // Store file and get path
-        //     $path = $file->storeAs('public/profile-photos', $filename);
-        //     // Also get the public URL for display
-        //     $profilePhotoUrl = Storage::url('profile-photos/' . $filename);
-        //     dd([
-        //         'stored_path' => $path,
-        //         'public_url' => $profilePhotoUrl,
-        //         'exists' => Storage::exists($path),
-        //     ]);
-        // }
-
-        // ✅ バリデーション（画像 + ユーザー名の重複チェック）
+        
         $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users'], // ← 追加！
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
         ]);
 
-        // ✅ プロフィール画像の保存処理
-        $profilePhotoUrl = null;
-        if ($request->hasFile('profile_photo')) {
-            $file = $request->file('profile_photo');
-            $path = $file->store('profile-photos', 'public');
-            $profilePhotoUrl = Storage::url($path);
-        }
-
-        // ✅ ユーザー登録処理
         $user = User::create([
             'username' => $request->username,
             'password' => Hash::make($request->password),
@@ -91,6 +67,7 @@ class RegisterController extends Controller
         ]);
 
         event(new Registered($user));
+
         Auth::login($user);
 
         return redirect(route('home', absolute: false));
