@@ -30,6 +30,11 @@
                             </span>
                         @enderror
                     </div>
+                    <div class="text-center mt-4">
+                        <a href="{{ route('password.request') }}" class="text-sm text-gray-600 underline hover:text-gray-900">
+                            Forgot the password
+                        </a>
+                    </div>
                     <!-- LOGINボタン -->
                     <div class="mb-4">
                         <button type="submit" class="btn btn-success w-full">Log in</button>

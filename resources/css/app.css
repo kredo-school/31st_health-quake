@@ -158,3 +158,22 @@ nav .user-icon img {
     border-radius: 50%; /* 丸形にする */
     object-fit: cover; /* アイコン画像を適切に表示 */
 }
+
+/* Ensure the flex container uses row direction */
+.flex {
+    display: flex;
+    flex-direction: row; /* Arrange children horizontally */
+}
+
+/* Sidebar styles */
+sidebar {
+    min-height: 100vh; /* Ensure the sidebar spans the full height of the viewport */
+    position: sticky; /* Make the sidebar sticky to the top */
+    top: 0;
+}
+
+/* Main Content Area */
+.flex-1 {
+    flex-grow: 1; /* Allow the main content area to occupy remaining space */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
