@@ -7,7 +7,7 @@ use App\Models\Reward; // 報酬モデル
 use Illuminate\Support\Facades\Auth; // 認証機能
 use Illuminate\Support\Facades\Storage; // ファイルストレージ
 
-class RewardsController extends Controller
+class RewardController extends Controller
 {
     /**
      * 報酬設定ページを表示
@@ -151,5 +151,115 @@ class RewardsController extends Controller
         $reward->delete();
 
         return redirect()->route('rewards.index')->with('success', '報酬が削除されました！');
+    }
+
+    /**
+     * ご褒美獲得ページを表示
+     * レベルが3の倍数になったときに呼び出される
+     */
+    public function earned($level)
+    {
+        // ログインチェック
+        if (! Auth::check()) {
+            return redirect()->route('login')->with('error', 'ログインしてください');
+        }
+
+        // レベルが3の倍数でない場合はカレンダーにリダイレクト
+        if ($level % 3 != 0) {
+            return redirect()->route('calendar.show', ['date' => now()->format('Y-m-d')]);
+        }
+
+        // 現在のユーザーを取得
+        $user = Auth::user();
+
+        // ユーザーが設定したご褒美を取得
+        $userRewards = $user->rewards;
+
+        // ご褒美がない場合はサンプルご褒美を使用
+        if ($userRewards->isEmpty()) {
+            $rewards = [
+                [
+                    'id' => 'sample_1',
+                    'title' => 'Eat favorite food',
+                    'description' => '好きな食べ物を食べる',
+                    'level' => 5,
+                    'image' => 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38'
+                ],
+                [
+                    'id' => 'sample_2',
+                    'title' => 'Watch favorite anime',
+                    'description' => '好きなアニメを見る',
+                    'level' => 5,
+                    'image' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131'
+                ],
+                [
+                    'id' => 'sample_3',
+                    'title' => 'Buy something nice',
+                    'description' => '何か素敵なものを買う',
+                    'level' => 5,
+                    'image' => 'https://images.unsplash.com/photo-1565958011703-44f9829ba187'
+                ]
+            ];
+
+            // サンプルからランダムに選択
+            $randomIndex = array_rand($rewards);
+            $reward = $rewards[$randomIndex];
+        } else {
+            // 実際のユーザーのご褒美からランダムに選択
+            $randomReward = $userRewards->random();
+
+            $reward = [
+                'id' => $randomReward->id,
+                'title' => $randomReward->title,
+                'description' => $randomReward->description,
+                'level' => $randomReward->level,
+                'image' => $randomReward->image ? asset('storage/' . $randomReward->image) : 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38'
+            ];
+        }
+
+        // 次のご褒美獲得レベル（次の3の倍数）を計算
+        $nextRewardLevel = ($level + 3);
+
+        // ご褒美獲得履歴をデータベースに記録（必要に応じて）
+        $this->recordRewardEarned($user->id, $level, $reward['id'] ?? null);
+
+        // ご褒美ページに必要なデータを渡す
+        return view('reward_earned', [
+            'currentLevel' => $level,
+            'reward' => $reward,
+            'nextRewardLevel' => $nextRewardLevel
+        ]);
+    }
+
+    /**
+     * ご褒美獲得履歴を記録（オプショナル機能）
+     */
+    private function recordRewardEarned($userId, $level, $rewardId)
+    {
+        // RewardHistoryモデルがある場合の処理
+        // 必要に応じて実装する
+
+        // 例：
+        // RewardHistory::create([
+        //     'user_id' => $userId,
+        //     'reward_id' => $rewardId,
+        //     'level' => $level,
+        //     'earned_at' => now()
+        // ]);
+    }
+
+    /**
+     * ユーザーのレベルに基づいてご褒美ページにリダイレクトするかチェック
+     * 他のコントローラーから呼び出すためのユーティリティメソッド
+     */
+    public function checkRewardEligibility($level)
+    {
+        // レベルが3の倍数の場合はご褒美獲得ページにリダイレクト
+        if ($level % 3 == 0) {
+            return redirect()->route('reward.earned', ['level' => $level]);
+        }
+
+        // そうでなければfalseを返す（通常の処理を続行）
+        return false;
     }
 }

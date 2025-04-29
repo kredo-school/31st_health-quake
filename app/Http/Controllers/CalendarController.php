@@ -39,11 +39,16 @@ class CalendarController extends Controller
 
     /**
      * 特定の日付のカレンダーデータを表示するメソッド
-     * @param string $date
+     * @param string|null $date
      * @return \Illuminate\View\View
      */
-    public function show(string $date): View
+    public function show(string $date = null): View
     {
+        // 日付が指定されていない場合は今日の日付を使用
+        if ($date === null) {
+            $date = Carbon::now()->format('Y-m-d');
+        }
+
         try {
             // 日付を解析
             $parsedDate = Carbon::parse($date);
@@ -104,9 +109,6 @@ class CalendarController extends Controller
                 ];
             }
 
-            // デバッグ用
-            // dd($descriptions);
-
             return view('calendar.show', [
                 'date' => $parsedDate->format('Y-m-d'), // 日付をビューに渡す
                 'year' => $year, // 年をビューに渡す
@@ -117,7 +119,9 @@ class CalendarController extends Controller
             ]);
         } catch (\Exception $e) {
             // 不正な日付の場合、エラーメッセージを表示
-            dd($e);
+            // デバッグ情報は本番環境では削除するか、ログに記録する形に変更
+            // dd($e);
+            \Log::error('Calendar error: ' . $e->getMessage());
             return back()->withErrors(['date' => 'Invalid date format. Please provide a valid date.']);
         }
     }

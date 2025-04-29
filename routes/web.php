@@ -28,7 +28,7 @@ require __DIR__ . '/auth.php';
 // ------------------------------------------------------
 Route::middleware([])->group(function () {
     // ホームページ
-    Route::get('/', fn () => Auth::check() ? redirect()->route('home') : view('welcome'))->name('home');
+    Route::get('/', fn() => Auth::check() ? redirect()->route('home') : view('welcome'))->name('home');
 
     // 認証関係
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -37,7 +37,7 @@ Route::middleware([])->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
 
     // registernew に GET で来たら register にリダイレクト
-    Route::get('/registernew', fn () => redirect()->route('register'));
+    Route::get('/registernew', fn() => redirect()->route('register'));
 });
 
 Route::get('/home', function () {
@@ -77,13 +77,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/penalty', [PenaltyController::class, 'show'])->name('penalty.show');
 
     // 習慣
-    Route::get('/add_habit', fn () => view('add_habit'))->name('add_habit');
+    Route::get('/add_habit', fn() => view('add_habit'))->name('add_habit');
     Route::post('/save_habit', [HabitController::class, 'store'])->name('save_habit');
     Route::get('/set-routine', [HabitController::class, 'index'])->name('set-routine');
     Route::get('/habits/{id}', [HabitController::class, 'destroy'])->name('delete-habit');
 
     // ランキング
-    Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
+    Route::get('/ranking', [App\Http\Controllers\RankingController::class, 'index'])->name('ranking');
+
 
     // タスク関連
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
@@ -99,11 +100,19 @@ Route::middleware(['auth'])->group(function () {
 
     // レベル
     Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-level.show');
+    Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
+
+
+    Route::post('/habits/{id}/complete', [App\Http\Controllers\HabitController::class, 'complete'])->name('habits.complete');
+    Route::get('/habits/{id}/done', [App\Http\Controllers\HabitController::class, 'done'])->name('habits.done');
+    // レベルアップ画面のルート
+    Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
+
 
     // カレンダー
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendarnew', [CalendarController::class, 'shownew'])->name('calendar.shownew');
-    Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show');
+    Route::get('/calendar/{date?}', [CalendarController::class, 'show'])->name('calendar.show');
     Route::get('/calendar/calendarnew', [CalendarController::class, 'shownew'])->name('calendar.calendarnew');
 
     // タイマー
@@ -120,6 +129,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('rewards.edit');
     Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
     Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
+
+    Route::get('/reward/earned/{level}', 'RewardController@earned')->name('reward.earned');
+
 
     // API
     Route::get('/api/tasks/{year}/{month}', [TaskController::class, 'getTasks']);
@@ -145,5 +157,5 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 });
 
 // ログアウト処理
-Route::post('/logout', fn () => tap(auth()->logout(), fn () => redirect('/')))->name('logout');
+Route::post('/logout', fn() => tap(auth()->logout(), fn() => redirect('/')))->name('logout');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
