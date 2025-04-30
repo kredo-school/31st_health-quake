@@ -1,7 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-// コントローラー
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ProfileController;
@@ -53,8 +52,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user-tasks/{userTask}/complete', [TaskController::class, 'completeTask'])->name('user-tasks.complete');
     // ルーティン
     Route::resource('routines', RoutineController::class);
-    // レベル
-    Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-level.show');
+     // レベル
+     Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-level.show');
+     Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
+ 
+ 
+     Route::post('/habits/{id}/complete', [App\Http\Controllers\HabitController::class, 'complete'])->name('habits.complete');
+     Route::get('/habits/{id}/done', [App\Http\Controllers\HabitController::class, 'done'])->name('habits.done');
+     // レベルアップ画面のルート
+     Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
+ 
+ 
     // カレンダー
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendarnew', [CalendarController::class, 'shownew'])->name('calendar.shownew');
@@ -115,74 +123,6 @@ Route::get('/home', function () {
     return view($randomView);
 })->middleware(['auth', 'verified'])->name('home');
 
-// 以下のグループは上記と完全に重複しているためコメントアウト
-/*
-Route::middleware(['auth'])->group(function () {
-    // ダッシュボード
-    // Route::get('/home', fn () => view('welcome_login'))->name('home');
-    // プロフィール関連
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // 連続ログイン記録
-    Route::get('/login-record', [LoginRecordController::class, 'index'])->name('login.record');
-    // ボーナス・ペナルティ
-    Route::get('/bonus', [BonusController::class, 'show'])->name('bonus.show');
-    Route::get('/penalty', [PenaltyController::class, 'show'])->name('penalty.show');
-    // 習慣
-    Route::get('/add_habit', fn() => view('add_habit'))->name('add_habit');
-    Route::post('/save_habit', [HabitController::class, 'store'])->name('save_habit');
-    Route::get('/set-routine', [HabitController::class, 'index'])->name('set-routine');
-    Route::get('/habits/{id}', [HabitController::class, 'destroy'])->name('delete-habit');
-    // ランキング
-    Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
-    // タスク関連
-    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
-    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
-    Route::post('/tasks/{task}/add-to-my-tasks', [TaskController::class, 'addToMyTasks'])->name('tasks.add-to-my-tasks');
-    Route::delete('/tasks/{task}/remove-from-my-tasks', [TaskController::class, 'removeFromMyTasks'])->name('tasks.remove-from-my-tasks');
-    Route::post('/user-tasks/{userTask}/complete', [TaskController::class, 'completeTask'])->name('user-tasks.complete');
-    // ルーティン
-    Route::resource('routines', RoutineController::class);
-    // レベル
-    Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-level.show');
-    Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
-
-
-    Route::post('/habits/{id}/complete', [App\Http\Controllers\HabitController::class, 'complete'])->name('habits.complete');
-    Route::get('/habits/{id}/done', [App\Http\Controllers\HabitController::class, 'done'])->name('habits.done');
-    // レベルアップ画面のルート
-    Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
-
-
-    // カレンダー
-    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
-    Route::get('/calendarnew', [CalendarController::class, 'shownew'])->name('calendar.shownew');
-    Route::get('/calendar/{date?}', [CalendarController::class, 'show'])->name('calendar.show');
-    Route::get('/calendar/calendarnew', [CalendarController::class, 'shownew'])->name('calendar.calendarnew');
-    // タイマー
-    Route::get('/timer/start', [TimerController::class, 'index'])->name('timer.start');
-    Route::get('/timer/show', [TimerController::class, 'show'])->name('timer.show');
-    Route::post('/timer/stop', [TimerController::class, 'stopTimer'])->name('timer.stop');
-    Route::post('/timer/restart', [TimerController::class, 'restartTimer'])->name('timer.restart');
-    Route::post('/set-routine/quit', [TimerController::class, 'quitTasks'])->name('set-routine.quit');
-    Route::post('/timer/done', [TimerController::class, 'done'])->name('timer.done');
-    // 報酬
-    Route::get('/set-rewards', [RewardsController::class, 'index'])->name('rewards.index');
-    Route::post('/set-rewards', [RewardsController::class, 'store'])->name('rewards.store');
-    Route::get('/set-rewards/{id}/edit', [RewardsController::class, 'edit'])->name('rewards.edit');
-    Route::put('/set-rewards/{id}', [RewardsController::class, 'update'])->name('rewards.update');
-    Route::delete('/set-rewards/{id}', [RewardsController::class, 'destroy'])->name('rewards.destroy');
-
-    Route::get('/reward/earned/{level}', 'RewardController@earned')->name('reward.earned');
-
-
-    // API
-    Route::get('/api/tasks/{year}/{month}', [TaskController::class, 'getTasks']);
-});
-*/
 
 // ------------------------------------------------------
 // 🔐 Admin 専用ルート（認証と管理者権限が必要）
@@ -204,14 +144,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/categories/update', [AdminController::class, 'updateCategories'])->name('admin.categories.update');
 });
 
-// ログアウト処理（POSTのみ）
-// 以下のルートはすでに定義されているためコメントアウト
-/*
-Route::post('/logout', function () {
-    auth()->logout(); // ログアウト処理
-    return redirect('/'); // ホームページにリダイレクト
-})->name('logout');
-*/
 
 // パスワードリセット関連のルート
 use App\Http\Controllers\Auth\ChangePasswordController;
