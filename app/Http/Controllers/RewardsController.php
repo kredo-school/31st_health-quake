@@ -7,7 +7,7 @@ use App\Models\Reward; // 報酬モデル
 use Illuminate\Support\Facades\Auth; // 認証機能
 use Illuminate\Support\Facades\Storage; // ファイルストレージ
 
-class RewardController extends Controller
+class RewardsController extends Controller
 {
     /**
      * 報酬設定ページを表示
