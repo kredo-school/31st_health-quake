@@ -177,3 +177,8 @@ sidebar {
     flex-grow: 1; /* Allow the main content area to occupy remaining space */
     overflow-y: auto; /* Enable vertical scrolling if content overflows */
 }
+
+.celebration-container {
+     width: 8rem; /* Full width */
+
+}
