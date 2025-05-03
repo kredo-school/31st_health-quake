@@ -7,26 +7,42 @@ use Carbon\Carbon;
 use App\Models\Habit;
 use App\Models\UserTask;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TimerController extends Controller
 {
+    /**
+     * タイマーを開始するための処理
+     */
     public function index(Request $request)
     {
-        $duration = $request->input('duration', 300);
+        Log::debug('TimerController@index called');
+
+        // リクエストからデータを取得
+        $duration = $request->input('duration', 300); // デフォルト5分（300秒）
         $habitName = $request->input('name', 'Default Habit');
         $category = $request->input('category', 'Default Category');
-        $date = $request->input('date', Carbon::now()->format('Y-m-d'));
+        $date = $request->input('date', Carbon::now()->format('Y-m-d H:i:s'));
 
-        session()->put('timer_start', Carbon::now());
-        session()->put('timer_duration', $duration);
-        session()->put('habit_name', $habitName);
-        session()->put('category', $category);
-        session()->put('date', $date);
-        session()->put('is_timer_running', true);
+        Log::debug("Timer settings - Duration: {$duration}, Name: {$habitName}, Category: {$category}, Date: {$date}");
 
+        // タイマーデータをセッションに保存
+        session([
+            'timer_start' => Carbon::now(),
+            'timer_duration' => $duration,
+            'habit_name' => $habitName,
+            'category' => $category,
+            'date' => $date,
+            'is_timer_running' => true
+        ]);
+
+        // タイマー表示画面にリダイレクト
         return redirect()->route('timer.show');
     }
 
+    /**
+     * タイマーの表示処理
+     */
     public function show()
     {
         $startTime = session('timer_start');
@@ -55,12 +71,18 @@ class TimerController extends Controller
         ]);
     }
 
+    /**
+     * タイマーを停止する処理
+     */
     public function stopTimer()
     {
         session()->put('is_timer_running', false);
         return redirect()->route('timer.show');
     }
 
+    /**
+     * タイマーを再開する処理
+     */
     public function restartTimer()
     {
         $elapsedTime = session('elapsed_time', 0);
@@ -72,6 +94,9 @@ class TimerController extends Controller
         return redirect()->route('timer.show');
     }
 
+    /**
+     * タスクを終了する処理
+     */
     public function quitTasks()
     {
         session()->forget([
@@ -87,8 +112,13 @@ class TimerController extends Controller
         return redirect('/');
     }
 
+    /**
+     * タスク完了処理
+     */
     public function done(Request $request)
     {
+        Log::debug('Timer done method called');
+
         $userId = Auth::id();
         $today = Carbon::now()->toDateString();
 
@@ -116,6 +146,7 @@ class TimerController extends Controller
             $userTask->is_completed = true;
             $userTask->last_completed_at = Carbon::now();
             $userTask->save();
+            Log::debug("User task marked as complete: {$userTask->id}");
         }
 
         // Habitも更新または新規作成
@@ -128,6 +159,7 @@ class TimerController extends Controller
             $habit->is_completed = 1;
             $habit->last_completed = now();
             $habit->save();
+            Log::debug("Habit updated: {$habit->id}");
         } else {
             // Habitが存在しない場合は新規作成
             $habit = new Habit();
@@ -137,26 +169,33 @@ class TimerController extends Controller
             $habit->is_completed = 1;
             $habit->last_completed = now();
             $habit->save();
+            Log::debug("New habit created: {$habit->id}");
         }
 
         // ユーザーの習慣達成数を更新
         $user = Auth::user();
 
         // 習慣達成カウント処理
+        $habitsCompleted = 0;
+
         try {
             // DBにhabits_completedフィールドがある場合
             $user->habits_completed = ($user->habits_completed ?? 0) + 1;
             $user->save();
-
             $habitsCompleted = $user->habits_completed;
+            Log::debug("User habits_completed updated: {$habitsCompleted}");
         } catch (\Exception $e) {
             // DBにhabits_completedフィールドがない場合
             $habitsCompleted = session('habits_completed', 0) + 1;
             session(['habits_completed' => $habitsCompleted]);
+            Log::debug("Session habits_completed updated: {$habitsCompleted}");
         }
 
         // レベルアップ条件をチェック (5回達成ごと)
-        if ($habitsCompleted % 5 == 0) {
+        $shouldLevelUp = $habitsCompleted % 5 == 0;
+        Log::debug("Should level up? " . ($shouldLevelUp ? 'Yes' : 'No') . " (habits completed: {$habitsCompleted})");
+
+        if ($shouldLevelUp) {
             // 現在のレベルと次のレベルを計算
             try {
                 $currentLevel = $user->level ?? 1;
@@ -165,22 +204,28 @@ class TimerController extends Controller
                 // DBにレベルフィールドがある場合は更新
                 $user->level = $nextLevel;
                 $user->save();
+                Log::debug("User level updated: {$currentLevel} -> {$nextLevel}");
             } catch (\Exception $e) {
                 // DBにlevelフィールドがない場合
                 $currentLevel = session('user_level', 1);
                 $nextLevel = $currentLevel + 1;
                 session(['user_level' => $nextLevel]);
+                Log::debug("Session user_level updated: {$currentLevel} -> {$nextLevel}");
             }
 
             // レベル情報をセッションに保存（LevelControllerでの表示用）
             session(['current_level' => $currentLevel]);
             session(['next_level' => $nextLevel]);
+            session(['level_up_needed' => true]);
 
-            // レベルアップ画面へリダイレクト
+            Log::debug("Redirecting to level.up route");
+
+            // 強制的にレベルアップ画面へリダイレクト
             return redirect()->route('level.up');
         }
 
-        // 通常はカレンダー画面へリダイレクト
-        return redirect()->route('calendar.show', ['date' => $today]);
+        Log::debug("Redirecting to calendar.show route with date: {$today}");
+        // 常にレベルアップ画面へリダイレクト（条件に関わらず）
+        return redirect()->route('level.up');
     }
 }

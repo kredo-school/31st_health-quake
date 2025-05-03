@@ -34,7 +34,7 @@
 
             <div class="timer-display text-center mb-8">
                 <span id="timer">4:00</span>
-                <div class="text-sm text-gray-500">Time elapsed since start</div>
+                <div class="text-sm text-gray-500">経過時間</div>
             </div>
 
             <div class="grid grid-cols-1 gap-4">
@@ -81,25 +81,41 @@
                     // リダイレクト先のURLに移動
                     window.location.href = data.redirectUrl;
                 } else {
-                    alert(data.message || 'An error occurred');
+                    alert(data.message || 'エラーが発生しました');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while completing the habit');
+                alert('習慣の完了中にエラーが発生しました');
             });
         });
 
         // Stopボタンのイベントハンドラ
         document.getElementById('stop-button').addEventListener('click', function() {
-            // タイマーを停止する処理（実際のアプリケーションの仕様に合わせて実装）
-            alert('Timer stopped');
+            // タイマーを停止する処理
+            fetch('/timer/stop', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                location.reload(); // ページを再読み込み
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('タイマーの停止中にエラーが発生しました');
+            });
         });
 
         // Quitボタンのイベントハンドラ
         document.getElementById('quit-button').addEventListener('click', function() {
-            // タスクを終了する処理
-            window.location.href = '{{ route('dashboard') }}';
+            if (confirm('タスクを終了しますか？進行状況は保存されません。')) {
+                // タスクを終了する処理
+                window.location.href = '{{ route("calendar.index") }}';
+            }
         });
     </script>
 </body>
