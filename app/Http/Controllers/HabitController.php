@@ -7,9 +7,31 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Habit;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class HabitController extends Controller
 {
+    /**
+     * Display the latest habits for the set-routine page
+     */
+    public function index()
+    {
+        // 未完了の習慣のみを取得するように修正
+        $habits = Auth::user()->habits()
+            ->where(function ($query) {
+                $query->where('is_completed', '!=', 1)
+                    ->orWhereNull('is_completed');
+            })
+            ->latest()
+            ->take(4)
+            ->get();
+
+        Log::debug('HabitController@index called, found ' . $habits->count() . ' habits');
+
+        // Pass habits to the view
+        return view('routines.SetRoutine', compact('habits'));
+    }
+
     /**
      * Delete the authenticated user's habit
      */
@@ -38,21 +60,6 @@ class HabitController extends Controller
     }
 
     /**
-     * Display the latest 4 habits
-     */
-    public function index()
-    {
-        // Retrieve latest 4 habits for the authenticated user
-        $habits = Auth::user()->habits()
-            ->latest()
-            ->take(4)
-            ->get();
-
-        // Pass habits to the view
-        return view('routines.SetRoutine', compact('habits'));
-    }
-
-    /**
      * Save a new habit
      */
     public function store(Request $request)
@@ -64,18 +71,25 @@ class HabitController extends Controller
             'date' => 'required|date',
         ]);
 
-        // Check habit count before saving
-        $currentHabitsCount = Auth::user()->habits()->count();
+        // 未完了の習慣数だけをカウントするように修正
+        $incompleteHabitsCount = Auth::user()->habits()
+            ->where(function ($query) {
+                $query->where('is_completed', '!=', 1)
+                    ->orWhereNull('is_completed');
+            })
+            ->count();
 
-        if ($currentHabitsCount >= 3) {
+        if ($incompleteHabitsCount >= 3) {
             return redirect()->back()
-                ->withErrors(['error' => 'You can only set up to 3 habits.'])
+                ->withErrors(['error' => 'You can only set up to 3 active habits.'])
                 ->withInput();
         }
 
-        // Assign user_id and save
+        // Assign user_id and save - デフォルト値の設定
         $validatedData['user_id'] = Auth::id();
+        $validatedData['is_completed'] = false; // 初期状態は未完了
         Habit::create($validatedData);
+
 
         // Redirect with success message
         return redirect()->route('set-routine')
@@ -113,52 +127,89 @@ class HabitController extends Controller
             ], 403);
         }
 
-        // 習慣を完了としてマーク
+        // 習慣を完了としてマーク - 整数値1を使用
         $habit->completed_at = Carbon::now();
+        $habit->is_completed = 1;  // このフィールドを整数値で設定
+        $habit->last_completed = Carbon::now();  // 最後に完了した日時も記録
         $habit->save();
+
+        // ログに記録して確認
+        Log::debug("Habit marked as complete - ID: {$habit->id}, is_completed: {$habit->is_completed}, completed_at: {$habit->completed_at}");
 
         // ユーザーのタスク達成数を増やす
         $user = Auth::user();
 
-        // habits_completedカラムがない場合のエラー処理
+        // 習慣達成カウント処理
+        $habitsCompleted = 0;
+
         try {
+            // DBにhabits_completedフィールドがある場合
             $user->habits_completed = ($user->habits_completed ?? 0) + 1;
             $user->save();
-        } catch (\Exception $e) {
-            // エラーログを出力
-            \Log::error('Error updating habits_completed: ' . $e->getMessage());
+            $habitsCompleted = $user->habits_completed;
 
-            // habits_completedカラムが存在しない場合は、このステップをスキップ
-            // レベルアップ処理はセッションで管理
+            Log::debug("User habits_completed updated: {$habitsCompleted}");
+        } catch (\Exception $e) {
+            // DBにhabits_completedフィールドがない場合
+            $habitsCompleted = session('habits_completed', 0) + 1;
+            session(['habits_completed' => $habitsCompleted]);
+
+            Log::debug("Session habits_completed updated: {$habitsCompleted}");
         }
 
         // レベルアップの条件をチェック（例：5タスクごとにレベルアップ）
-        $habitsCompleted = $user->habits_completed ?? session('habits_completed', 0);
-
-        if (!isset($user->habits_completed)) {
-            // セッションで管理している場合はインクリメント
-            session(['habits_completed' => $habitsCompleted + 1]);
-            $habitsCompleted = session('habits_completed');
-        }
-
         $shouldLevelUp = $habitsCompleted > 0 && $habitsCompleted % 5 == 0;
 
-        if ($shouldLevelUp) {
-            // レベルアップが必要な場合
-            session(['level_up_needed' => true]);
-            return response()->json([
-                'success' => true,
-                'shouldLevelUp' => true,
-                'redirectUrl' => route('level.up')
-            ]);
-        } else {
-            // 通常のカレンダーページにリダイレクト
-            return response()->json([
-                'success' => true,
-                'shouldLevelUp' => false,
-                'redirectUrl' => route('calendar.show')
-            ]);
+        Log::debug("Should level up? " . ($shouldLevelUp ? 'Yes' : 'No'));
+
+        // ユーザーの現在のレベルを取得
+        try {
+            $currentLevel = $user->level ?? 1;
+
+            // レベルアップする場合は次のレベルを計算して更新
+            if ($shouldLevelUp) {
+                $nextLevel = $currentLevel + 1;
+
+                // DBにレベルフィールドがある場合は更新
+                $user->level = $nextLevel;
+                $user->save();
+
+                Log::debug("User level updated: {$currentLevel} -> {$nextLevel}");
+            } else {
+                $nextLevel = $currentLevel;
+            }
+        } catch (\Exception $e) {
+            // DBにlevelフィールドがない場合
+            $currentLevel = session('user_level', 1);
+
+            if ($shouldLevelUp) {
+                $nextLevel = $currentLevel + 1;
+                session(['user_level' => $nextLevel]);
+
+                Log::debug("Session user_level updated: {$currentLevel} -> {$nextLevel}");
+            } else {
+                $nextLevel = $currentLevel;
+            }
         }
+
+        // レベル情報をセッションに保存（LevelControllerでの表示用）
+        session(['current_level' => $currentLevel]);
+        session(['next_level' => $nextLevel]);
+
+        // 重要：カレンダーにタスク完了を記録するための情報をセッションに保存
+        session(['completed_habit_id' => $habit->id]);
+        session(['completed_habit_date' => $habit->date]);
+        session(['completed_habit_name' => $habit->name]);
+        session(['completed_habit_category' => $habit->category]);
+
+        Log::debug("Habit completion recorded in session for calendar: habit_id={$habit->id}");
+
+        // 常にレベルアップ画面へリダイレクト
+        return response()->json([
+            'success' => true,
+            'message' => $shouldLevelUp ? 'Level up!' : 'Task completed',
+            'redirectUrl' => route('level.up')
+        ]);
     }
 
     /**

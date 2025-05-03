@@ -102,4 +102,12 @@ class User extends Authenticatable
         return $this->userTasks()
             ->whereDate('updated_at', now()->toDateString());
     }
+
+    /**
+     * ユーザーが設定した報酬を取得
+     */
+    public function rewards(): HasMany
+    {
+        return $this->hasMany(Rewards::class);
+    }
 }

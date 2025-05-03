@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Habit; // Habitモデルをインポート
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class CalendarController extends Controller
 {
@@ -39,17 +40,18 @@ class CalendarController extends Controller
 
     /**
      * 特定の日付のカレンダーデータを表示するメソッド
+     * @param Request $request
      * @param string|null $date
      * @return \Illuminate\View\View
      */
-    public function show(string $date = null): View
+    public function show(Request $request, string $date = null): View
     {
-        // 日付が指定されていない場合は今日の日付を使用
-        if ($date === null) {
-            $date = Carbon::now()->format('Y-m-d');
-        }
-
         try {
+            // 日付が指定されていない場合は今日の日付を使用
+            if ($date === null) {
+                $date = Carbon::now()->format('Y-m-d');
+            }
+
             // 日付を解析
             $parsedDate = Carbon::parse($date);
 
@@ -63,25 +65,34 @@ class CalendarController extends Controller
                 return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
             }
 
-            // 該当日付の habit を取得
-            $habits = Habit::where('user_id', $user->id)
+            // カレンダー表示用の完了済み習慣のみを取得
+            $allHabits = Habit::where('user_id', $user->id)
+                ->whereYear('date', $year)
+                ->whereMonth('date', $month)
+                ->where('is_completed', 1) // 完了済みの習慣のみを表示
                 ->get();
+
+            // 未完了の習慣のみを取得（リスト表示用）
+            $activeHabits = Habit::where('user_id', $user->id)
+                ->where(function ($query) {
+                    $query->where('is_completed', '!=', 1)
+                        ->orWhereNull('is_completed');
+                })
+                ->orderBy('date', 'desc')
+                ->get();
+
+            // デバッグ情報
+            Log::debug("Total completed habits: " . $allHabits->count() . ", Active habits: " . $activeHabits->count());
 
             // 月初の日付を生成
             $startOfMonth = Carbon::create($year, $month, 1);
             $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 (Sun) to 6 (Sat)
 
-            // その月の habit を取得（年と月で絞り込み）
-            $habits1 = Habit::where('user_id', $user->id)
-                ->whereYear('date', $year)
-                ->whereMonth('date', $month)
-                ->get();
-
             // 日付ごとに習慣を整理
             $descriptions = [];
 
             // 各習慣を処理
-            foreach ($habits1 as $habit) {
+            foreach ($allHabits as $habit) {
                 $dateStr = $habit->date->format('Y-m-d');
 
                 // カテゴリに基づいて色を決定
@@ -103,25 +114,40 @@ class CalendarController extends Controller
                     $descriptions[$dateStr] = [];
                 }
 
+                // 習慣をdescriptions配列に追加
                 $descriptions[$dateStr][] = [
                     'text' => $habit->name,
                     'color' => $color,
+                    'completed' => true, // すべて完了済み
+                    'habit_id' => $habit->id
                 ];
+
+                // デバッグログ
+                Log::debug("Added habit to descriptions - ID: {$habit->id}, Name: {$habit->name}, Date: {$dateStr}");
             }
 
+            // リクエストから完了したタスクIDを取得
+            $completedHabitId = $request->query('completed_habit_id');
+
+            // セッションから完了したhabit情報を取得
+            $sessionCompletedHabitId = session('completed_habit_id');
+
+            // 今日の日付
+            $today = Carbon::now()->format('Y-m-d');
+
             return view('calendar.show', [
-                'date' => $parsedDate->format('Y-m-d'), // 日付をビューに渡す
-                'year' => $year, // 年をビューに渡す
-                'month' => $month, // 月をビューに渡す
-                'startDayOfWeek' => $startDayOfWeek, // 月初の曜日をビューに渡す
-                'habits' => $habits, // 習慣データをビューに渡す
+                'date' => $parsedDate->format('Y-m-d'),
+                'year' => $year,
+                'month' => $month,
+                'startDayOfWeek' => $startDayOfWeek,
+                'habits' => $allHabits, // 完了済みの習慣をカレンダーに表示
+                'activeHabits' => $activeHabits, // 未完了の習慣を別変数として保持
                 'descriptions' => $descriptions,
+                'completedHabitId' => $completedHabitId ?: $sessionCompletedHabitId,
+                'today' => $today
             ]);
         } catch (\Exception $e) {
-            // 不正な日付の場合、エラーメッセージを表示
-            // デバッグ情報は本番環境では削除するか、ログに記録する形に変更
-            // dd($e);
-            \Log::error('Calendar error: ' . $e->getMessage());
+            Log::error('Calendar error: ' . $e->getMessage());
             return back()->withErrors(['date' => 'Invalid date format. Please provide a valid date.']);
         }
     }
@@ -150,10 +176,11 @@ class CalendarController extends Controller
             return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
         }
 
-        // その月の習慣データを取得
+        // その月の完了済み習慣データのみを取得
         $habits = Habit::where('user_id', $user->id)
             ->whereYear('date', $year)
             ->whereMonth('date', $month)
+            ->where('is_completed', 1) // 完了済みの習慣のみを表示
             ->get();
 
         // 各 habit の category を配列に格納
@@ -170,5 +197,29 @@ class CalendarController extends Controller
             'startDayOfWeek' => $startDayOfWeek,
             'markedHabits' => $markedHabits,
         ]);
+    }
+
+    /**
+     * カレンダーから習慣を削除するメソッド
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteHabit($id)
+    {
+        // 指定されたIDの習慣を取得
+        $habit = Habit::findOrFail($id);
+
+        // 権限チェック（自分の習慣のみ削除可能）
+        if ($habit->user_id != Auth::id()) {
+            return redirect()->back()
+                ->with('error', '他のユーザーの習慣は削除できません。');
+        }
+
+        // 習慣を削除
+        $habit->delete();
+
+        // 元のページにリダイレクト
+        return redirect()->back()
+            ->with('success', '習慣が削除されました。');
     }
 }
