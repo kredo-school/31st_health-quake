@@ -66,7 +66,7 @@
         // 10秒後に自動的にカレンダー画面へリダイレクト
         setTimeout(function() {
             window.location.href = "{{ route('calendar.show', ['date' => now()->format('Y-m-d')]) }}";
-        }, 10000);
+        }, 6000);
     @endif
 </script>
 @endsection

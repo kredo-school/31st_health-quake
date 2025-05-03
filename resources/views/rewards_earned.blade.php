@@ -102,9 +102,9 @@
             return colors[Math.floor(Math.random() * colors.length)];
         }
     
-        // Automatically redirect to the calendar screen after 10 seconds
-        // setTimeout(function() {
-        //     window.location.href = "{{ route('calendar.show', ['date' => now()->format('Y-m-d')]) }}";
-        // }, 5000);
+        Automatically redirect to the calendar screen after 10 seconds
+        setTimeout(function() {
+            window.location.href = "{{ route('calendar.show', ['date' => now()->format('Y-m-d')]) }}";
+        }, 7000);
     </script>
     @endsection
