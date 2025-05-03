@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::create('password_resets', function (Blueprint $table) {
-        $table->string('email')->index(); // ユーザーのメールアドレス
-        $table->string('token');          // 一時トークン
-        $table->timestamp('created_at')->nullable(); // トークン生成日時
-    });
+    if (!Schema::hasTable('password_resets')) {
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+    }
 }
 
     /**

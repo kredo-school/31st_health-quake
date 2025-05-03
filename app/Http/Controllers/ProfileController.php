@@ -12,7 +12,9 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        return view('profile', compact('user'));
+        $level = $user->level; // ユーザーのレベルを取得（例: 'level' カラムがある場合）
+
+        return view('profile', compact('user', 'level')); // ビューにデータを渡す
     }
 
     // プロフィール画像の更新処理

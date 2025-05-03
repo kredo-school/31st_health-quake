@@ -16,6 +16,7 @@ use App\Http\Controllers\RankingController;
 use App\Http\Controllers\TimerController;
 use App\Http\Controllers\RewardsController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CategoryController;
 
 // 認証ルート（Laravel BreezeやFortifyなどが生成するもの）
 require __DIR__ . '/auth.php';
@@ -54,14 +55,13 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('routines', RoutineController::class);
      // レベル
      Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-level.show');
-     Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
- 
+     Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up'); 
  
      Route::post('/habits/{id}/complete', [App\Http\Controllers\HabitController::class, 'complete'])->name('habits.complete');
      Route::get('/habits/{id}/done', [App\Http\Controllers\HabitController::class, 'done'])->name('habits.done');
      // レベルアップ画面のルート
      Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
- 
+
  
     // カレンダー
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
@@ -141,7 +141,8 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/login_penalties/update', [AdminController::class, 'updateLoginPenalties'])->name('admin.login_penalties.update');
     // カテゴリ管理
     Route::get('/categories', [AdminController::class, 'categories'])->name('admin.categories');
-    Route::post('/categories/update', [AdminController::class, 'updateCategories'])->name('admin.categories.update');
+    Route::post('/categories/update', [CategoryController::class, 'update'])->name('admin.categories.update');
+    //Route::post('/categories/update', [AdminController::class, 'updateCategories'])->name('admin.categories.update');
 });
 
 
