@@ -1,6 +1,7 @@
 <!-- resources/views/bonus.blade.php -->
 @extends('layouts.app')
 @section('content')
+
 <div class="container mx-auto px-4 py-12 text-center" style="background-color: #E0F7FA; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);">
     <div class="mb-10">
         <h4 class="text-lg font-semibold text-gray-800" style="letter-spacing: 1px;">CONSECUTIVE DAYS WITH LOGGING IN :</h4>
@@ -19,6 +20,7 @@
         </a>
     </div>
 </div>
+
 <!-- Add custom fonts and styles -->
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
