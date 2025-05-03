@@ -1,7 +1,17 @@
 @extends('admin.layout')
 
 @section('content')
-    <h1 class="text-2xl font-bold mb-4">Login Penalties</h1>
+<h1 class="text-2xl font-bold mb-4">Login Penalties</h1>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <!-- サイドバー -->
+    <aside class="w-45 bg-white border-r p-4 sticky top-14">
+        <div class="space-y-2"> 
+            <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Dashboard</a>
+            <a href="{{ route('admin.login_penalties') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Login Penalties</a>
+            <a href="{{ route('admin.categories') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Categories</a>
+        </div>
+    </aside>
+    
     <form action="{{ route('admin.login_penalties.update') }}" method="POST">
         @csrf
         <div class="bg-white shadow-md rounded my-6 p-4">
