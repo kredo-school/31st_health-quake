@@ -22,16 +22,16 @@ class RankingController extends Controller
             switch ($type) {
                 case 'weekly':
                     $ranks = $this->getWeeklyRanking();
-                    $rankingTitle = "週間ランキング";
+                    $rankingTitle = "Weekly Ranking";
                     break;
                 case 'monthly':
                     $ranks = $this->getMonthlyRanking();
-                    $rankingTitle = "月間ランキング";
+                    $rankingTitle = "Monthly Ranking";
                     break;
                 case 'level':
                 default:
                     $ranks = $this->getLevelRanking();
-                    $rankingTitle = "レベルランキング";
+                    $rankingTitle = "Level Ranking";
                     break;
             }
 
@@ -49,7 +49,7 @@ class RankingController extends Controller
         } catch (\Exception $e) {
             // エラーが発生した場合はレベルランキングにフォールバック
             $ranks = $this->getLevelRanking();
-            $rankingTitle = "レベルランキング";
+            $rankingTitle = "Level Ranking";
             $type = 'level';
 
             // 現在のユーザーのポジションを取得
@@ -128,7 +128,7 @@ class RankingController extends Controller
 
         foreach ($users as $user) {
             // アバター画像のURLをプロフィールから取得（なければプレースホルダーを使用）
-            $avatar = asset('images/default-avatar.png'); // デフォルトのアバター画像
+            $avatar = asset('images/default-user-icon.png'); // デフォルトのアバター画像
 
             // ユーザー画像がある場合はそれを使用
             if (Auth::id() === $user->id && Auth::user() && isset(Auth::user()->profile_photo_url)) {
@@ -136,7 +136,7 @@ class RankingController extends Controller
             }
 
             // ユーザー名（現在のユーザーなら「あなた」と表示）
-            $displayName = $user->id === Auth::id() ? 'あなた' : $user->name;
+            $displayName = $user->id === Auth::id() ? 'YOU' : $user->name;
 
             $ranks[] = [
                 'user_id' => $user->id,
@@ -144,7 +144,7 @@ class RankingController extends Controller
                 'position' => $position,
                 'name' => $displayName,
                 'points' => $user->level,
-                'label' => 'レベル'
+                'label' => 'LEVEL'
             ];
 
             $position++;
@@ -224,7 +224,7 @@ class RankingController extends Controller
 
             if ($user) {
                 // アバター画像のURLをプロフィールから取得（なければプレースホルダーを使用）
-                $avatar = asset('images/default-avatar.png'); // デフォルトのアバター画像
+                $avatar = asset('images/default-user-icon.png'); // デフォルトのアバター画像
 
                 // ユーザー画像がある場合はそれを使用
                 if (Auth::id() === $user->id && Auth::user() && isset(Auth::user()->profile_photo_url)) {
@@ -232,7 +232,7 @@ class RankingController extends Controller
                 }
 
                 // ユーザー名（現在のユーザーなら「あなた」と表示）
-                $displayName = $user->id === Auth::id() ? 'あなた' : $user->name;
+                $displayName = $user->id === Auth::id() ? 'YOU' : $user->name;
 
                 $ranks[] = [
                     'user_id' => $user->id,
@@ -240,7 +240,7 @@ class RankingController extends Controller
                     'position' => $position,
                     'name' => $displayName,
                     'points' => $stat->completed_count,
-                    'label' => '週間達成数'
+                    'label' => 'weekly completed'
                 ];
 
                 $position++;
@@ -267,7 +267,7 @@ class RankingController extends Controller
             $userCompletedCount = $query->count();
 
             // アバター画像のURLをプロフィールから取得
-            $avatar = asset('images/default-avatar.png');
+            $avatar = asset('images/default-user-icon.png');
             if (Auth::user() && isset(Auth::user()->profile_photo_url)) {
                 $avatar = Auth::user()->profile_photo_url;
             }
@@ -276,9 +276,9 @@ class RankingController extends Controller
                 'user_id' => Auth::id(),
                 'avatar' => $avatar,
                 'position' => count($ranks) + 1,
-                'name' => 'あなた',
+                'username' => 'YOU',
                 'points' => $userCompletedCount,
-                'label' => '週間達成数'
+                'label' => 'weekly completed'
             ];
         }
 
@@ -356,7 +356,7 @@ class RankingController extends Controller
 
             if ($user) {
                 // アバター画像のURLをプロフィールから取得（なければプレースホルダーを使用）
-                $avatar = asset('images/default-avatar.png'); // デフォルトのアバター画像
+                $avatar = asset('images/default-user-icon.png'); // デフォルトのアバター画像
 
                 // ユーザー画像がある場合はそれを使用
                 if (Auth::id() === $user->id && Auth::user() && isset(Auth::user()->profile_photo_url)) {
@@ -364,7 +364,7 @@ class RankingController extends Controller
                 }
 
                 // ユーザー名（現在のユーザーなら「あなた」と表示）
-                $displayName = $user->id === Auth::id() ? 'あなた' : $user->name;
+                $displayName = $user->id === Auth::id() ? 'YOU' : $user->name;
 
                 $ranks[] = [
                     'user_id' => $user->id,
@@ -372,7 +372,7 @@ class RankingController extends Controller
                     'position' => $position,
                     'name' => $displayName,
                     'points' => $stat->completed_count,
-                    'label' => '月間達成数'
+                    'label' => 'monthly completed'
                 ];
 
                 $position++;
@@ -399,7 +399,7 @@ class RankingController extends Controller
             $userCompletedCount = $query->count();
 
             // アバター画像のURLをプロフィールから取得
-            $avatar = asset('images/default-avatar.png');
+            $avatar = asset('images/default-user-icon.png');
             if (Auth::user() && isset(Auth::user()->profile_photo_url)) {
                 $avatar = Auth::user()->profile_photo_url;
             }
@@ -408,9 +408,9 @@ class RankingController extends Controller
                 'user_id' => Auth::id(),
                 'avatar' => $avatar,
                 'position' => count($ranks) + 1,
-                'name' => 'あなた',
+                'name' => 'YOU',
                 'points' => $userCompletedCount,
-                'label' => '月間達成数'
+                'label' => 'monthly completed'
             ];
         }
 

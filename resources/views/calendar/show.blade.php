@@ -15,7 +15,7 @@
             overflow: auto;
         }
         main {
-            margin-top: 420px;
+            margin-top: 320px;
         }
         .habit-icon {
             width: 24px;

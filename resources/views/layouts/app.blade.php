@@ -8,11 +8,16 @@
     <!-- Tailwind CSS -->
     @vite('resources/css/app.css') 
     @yield('css') 
-</head>
+</head> 
+<style>
+   main {
+        margin-top: 280px;
+    }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <body class="bg-teal font-sans antialiased">
-
     <!-- 固定ナビゲーションバー -->
-    <nav class="bg-white shadow-md">
+    <nav class="bg-white shadow-md fixed w-full z-10">
         <div class="container mx-auto flex justify-between items-center py-2">
             <!-- 左端：ロゴ -->
             <div class="flex items-center space-x-2">
@@ -59,7 +64,7 @@
     </nav>
 
     <!-- メインコンテンツ -->
-    <div class="container mx-auto px-4" style="padding-top: calc(6rem + 16px);">
+    <div class="container mx-auto px-4 pt-16" style="padding-top: calc(8rem + 16px);">
         <main>
             @yield('content')
             {{-- 登録ページ : resources/views/auth/register.blade.php --}}
