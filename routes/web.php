@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/login-record', [LoginRecordController::class, 'index'])->name('login.record');
 
     // ボーナス・ペナルティ
-    Route::get('/bonus', [BonusController::class, 'show'])->name('bonus.show');
+    Route::get('/bonus', [BonusController::class, 'showPaper'])->name('bonus.show');
     Route::get('/penalty', [PenaltyController::class, 'show'])->name('penalty.show');
 
     // 習慣

@@ -2,6 +2,11 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+   main {
+        margin-top: 740px;
+    }
+    </style>
 <div class="container mx-auto px-4 py-8" style="background: linear-gradient(135deg, #e0f7fa 0%, #bbdefb 100%); min-height: 100vh;">
     <div class="text-center mb-8">
         <h2 class="text-4xl font-bold py-2 px-6 inline-block" style="background: linear-gradient(90deg, #3949ab, #1e88e5); color: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(25, 118, 210, 0.4); letter-spacing: 1.5px; transform: rotate(-1deg);">CONGRATULATIONS!</h2>
