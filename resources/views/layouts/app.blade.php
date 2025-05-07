@@ -9,11 +9,11 @@
     @vite('resources/css/app.css') 
     @yield('css') 
 </head> 
-{{-- <style>
+<style>
    main {
         margin-top: 280px;
     }
-    </style> --}}
+    </style>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <body class="bg-teal font-sans antialiased">
     <!-- 固定ナビゲーションバー -->
