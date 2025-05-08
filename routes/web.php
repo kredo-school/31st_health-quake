@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
 
     // ボーナス・ペナルティ
     Route::get('/bonus', [BonusController::class, 'showPaper'])->name('bonus.show');
-    Route::get('/penalty', [PenaltyController::class, 'show'])->name('penalty.show');
+    Route::get('/penalty', [PenaltyController::class, 'index'])->name('penalty.show');
 
     // 習慣
     Route::get('/add_habit', fn() => view('add_habit'))->name('add_habit');
