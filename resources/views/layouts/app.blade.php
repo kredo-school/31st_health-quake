@@ -37,7 +37,7 @@
             </div>
 
             <!-- 右端：ユーザーエリア -->
-            <div class="flex items-center space-x-4 text-sm px-2 py-1 rounded">
+            <div class="flex items-center space-x-2">
                 @if (auth()->check())
                     <!-- プロフィールアイコン（DBに保存された画像を表示） -->
                     <a href="{{ route('profile') }}">
