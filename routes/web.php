@@ -63,19 +63,12 @@ Route::middleware(['auth'])->group(function () {
     // ルーティン
     Route::resource('routines', RoutineController::class);
 
-    // レベル
-    Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-level.show');
-    Route::get('/level-up', [LevelController::class, 'showLevelUp'])->name('level.up'); // 重要：追加
-
      // レベル
      Route::get('/user-level', [UserLevelController::class, 'show'])->name('user-level.show');
      Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
 
      Route::post('/habits/{id}/complete', [App\Http\Controllers\HabitController::class, 'complete'])->name('habits.complete');
      Route::get('/habits/{id}/done', [App\Http\Controllers\HabitController::class, 'done'])->name('habits.done');
-     // レベルアップ画面のルート
-     Route::get('/level-up', [App\Http\Controllers\LevelController::class, 'showLevelUp'])->name('level.up');
-
 
     // カレンダー
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
@@ -83,7 +76,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/calendar/{date}', [CalendarController::class, 'show'])->name('calendar.show');
     // カレンダーから習慣を削除
     Route::delete('/calendar/habits/{id}', [CalendarController::class, 'deleteHabit'])->name('calendar.delete-habit');
-
 
     // タイマー
     Route::get('/timer/start', [TimerController::class, 'index'])->name('timer.start');
@@ -167,7 +159,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/categories/update', [CategoryController::class, 'update'])->name('admin.categories.update');
     //Route::post('/categories/update', [AdminController::class, 'updateCategories'])->name('admin.categories.update');
 });
-
 
 // パスワードリセット関連のルート
 Route::get('/change-password', [ChangePasswordController::class, 'showChangePasswordForm'])

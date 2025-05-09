@@ -37,7 +37,7 @@
             </div>
 
             <!-- 右端：ユーザーエリア -->
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-4 text-sm px-2 py-1 rounded">
                 @if (auth()->check())
                     <!-- プロフィールアイコン（DBに保存された画像を表示） -->
                     <a href="{{ route('profile') }}">
@@ -53,6 +53,14 @@
                             Log out
                         </button>
                     </form>
+                    <!-- 管理者ボタン-->
+                    <form method="GET" action="{{ route('admin.dashboard') }}">
+                        @csrf
+                        <button type="submit" class="text-gray-600 hover:text-gray-800">
+                            Admin Page
+                        </button>
+                    </form>
+                
                 @else
                     <!-- ログイン・登録リンク（未ログイン時） -->
                     <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-800">Log in</a>
