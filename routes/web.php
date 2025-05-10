@@ -98,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ログアウト処理（POSTのみ）
-Route::post('/logout', function () {
+Route::get('/logout', function () {
     auth()->logout(); // ログアウト処理
     return redirect('/'); // ホームページにリダイレクト
 })->name('logout');

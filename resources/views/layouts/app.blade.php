@@ -50,10 +50,11 @@
                     <div class="flex items-center space-x-4">
                 
                 <a href="{{ route('logout') }}" class="text-gray-600 hover:text-gray-800">Log out</a>
+               @if(auth()->user()->role == "admin")
                 <span class="text-gray-400">|</span>
-                <a href="{{ route('admin.dashboard')}}" class="text-gray-600 hover:text-gray-800">Admin Page</a>
+                        <a href="{{ route('admin.dashboard')}}" class="text-gray-600 hover:text-gray-800">Admin Page</a>
+                @endif
             </div>
-                    
                 
                 @else
                     <!-- ログイン・登録リンク（未ログイン時） -->
