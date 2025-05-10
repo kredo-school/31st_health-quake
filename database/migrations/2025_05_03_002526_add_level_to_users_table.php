@@ -9,21 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->integer('level')->default(1); // デフォルト値を1に設定
-    });
-}
-
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            // levelカラムが存在するかチェックする
+            if (!Schema::hasColumn('users', 'level')) {
+                $table->integer('level')->default(1);
+            }
+        });
+    }
 
     /**
      * Reverse the migrations.
      */
-    public function down()
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn('level');
-    });
-}
+    public function down(): void
+    {
+        // down処理は変更しない
+        // カラムを削除する場合のみ記述
+    }
 };

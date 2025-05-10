@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\Habit; // Habitモデルをインポート
+use App\Models\CompletedHabit; // CompletedHabitモデルをインポート（追加）
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -65,11 +66,17 @@ class CalendarController extends Controller
                 return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
             }
 
-            // カレンダー表示用の完了済み習慣のみを取得
-            $allHabits = Habit::where('user_id', $user->id)
+            // 1. Habitテーブルから完了済み習慣を取得
+            $habitsFromHabitTable = Habit::where('user_id', $user->id)
                 ->whereYear('date', $year)
                 ->whereMonth('date', $month)
                 ->where('is_completed', 1) // 完了済みの習慣のみを表示
+                ->get();
+
+            // 2. CompletedHabitテーブルからも完了済み習慣を取得（追加）
+            $habitsFromCompletedTable = CompletedHabit::where('user_id', $user->id)
+                ->whereYear('completed_date', $year)
+                ->whereMonth('completed_date', $month)
                 ->get();
 
             // 未完了の習慣のみを取得（リスト表示用）
@@ -82,7 +89,9 @@ class CalendarController extends Controller
                 ->get();
 
             // デバッグ情報
-            Log::debug("Total completed habits: " . $allHabits->count() . ", Active habits: " . $activeHabits->count());
+            Log::debug("Total habits from Habit table: " . $habitsFromHabitTable->count());
+            Log::debug("Total habits from CompletedHabit table: " . $habitsFromCompletedTable->count());
+            Log::debug("Active habits: " . $activeHabits->count());
 
             // 月初の日付を生成
             $startOfMonth = Carbon::create($year, $month, 1);
@@ -91,24 +100,10 @@ class CalendarController extends Controller
             // 日付ごとに習慣を整理
             $descriptions = [];
 
-            // 各習慣を処理
-            foreach ($allHabits as $habit) {
+            // Habitテーブルの習慣を処理
+            foreach ($habitsFromHabitTable as $habit) {
                 $dateStr = $habit->date->format('Y-m-d');
-
-                // カテゴリに基づいて色を決定
-                $color = '';
-                if ($habit->category == 'exercise' || $habit->category == 'Exercise Category') {
-                    $color = 'bg-red-400';  // Exerciseは赤
-                } elseif ($habit->category == 'nutrition' || $habit->category == 'Nutrition Category') {
-                    $color = 'bg-green-400';  // Nutritionは緑
-                } elseif ($habit->category == 'sleep' || $habit->category == 'Sleep Category') {
-                    $color = 'bg-blue-400';  // Sleepは青
-                } elseif ($habit->category == 'other' || $habit->category == 'Other Categories') {
-                    $color = 'bg-purple-400';  // Otherは紫
-                } else {
-                    // デフォルトの色
-                    $color = 'bg-gray-300';
-                }
+                $color = $this->getCategoryColor($habit->category);
 
                 if (!isset($descriptions[$dateStr])) {
                     $descriptions[$dateStr] = [];
@@ -118,37 +113,72 @@ class CalendarController extends Controller
                 $descriptions[$dateStr][] = [
                     'text' => $habit->name,
                     'color' => $color,
-                    'completed' => true, // すべて完了済み
-                    'habit_id' => $habit->id
+                    'completed' => true,
+                    'habit_id' => $habit->id,
+                    'source' => 'habits'
                 ];
 
-                // デバッグログ
-                Log::debug("Added habit to descriptions - ID: {$habit->id}, Name: {$habit->name}, Date: {$dateStr}");
+                Log::debug("Added habit from Habits table - ID: {$habit->id}, Name: {$habit->name}, Date: {$dateStr}");
             }
 
-            // リクエストから完了したタスクIDを取得
-            $completedHabitId = $request->query('completed_habit_id');
+            // CompletedHabitテーブルの習慣を処理（追加）
+            foreach ($habitsFromCompletedTable as $habit) {
+                $dateStr = $habit->completed_date->format('Y-m-d');
+                $color = $this->getCategoryColor($habit->category);
 
-            // セッションから完了したhabit情報を取得
+                if (!isset($descriptions[$dateStr])) {
+                    $descriptions[$dateStr] = [];
+                }
+
+                // 重複チェック（同じ日に同じ名前の習慣がある場合は追加しない）
+                $isDuplicate = false;
+                foreach ($descriptions[$dateStr] as $existingHabit) {
+                    if ($existingHabit['text'] === $habit->name) {
+                        $isDuplicate = true;
+                        break;
+                    }
+                }
+
+                if (!$isDuplicate) {
+                    // 習慣をdescriptions配列に追加
+                    $descriptions[$dateStr][] = [
+                        'text' => $habit->name,
+                        'color' => $color,
+                        'completed' => true,
+                        'habit_id' => 'completed_' . $habit->id,
+                        'source' => 'completed_habits'
+                    ];
+
+                    Log::debug("Added habit from CompletedHabits - ID: {$habit->id}, Name: {$habit->name}, Date: {$dateStr}");
+                }
+            }
+
+            // リクエストとセッションから完了したタスクIDを取得
+            $completedHabitId = $request->query('completed_habit_id');
             $sessionCompletedHabitId = session('completed_habit_id');
 
             // 今日の日付
             $today = Carbon::now()->format('Y-m-d');
+
+            // 全てのハビットをマージして返す（両方のテーブルからの習慣）
+            $allHabits = $habitsFromHabitTable->concat($habitsFromCompletedTable);
 
             return view('calendar.show', [
                 'date' => $parsedDate->format('Y-m-d'),
                 'year' => $year,
                 'month' => $month,
                 'startDayOfWeek' => $startDayOfWeek,
-                'habits' => $allHabits, // 完了済みの習慣をカレンダーに表示
-                'activeHabits' => $activeHabits, // 未完了の習慣を別変数として保持
+                'habits' => $habitsFromHabitTable,
+                'completedHabits' => $habitsFromCompletedTable, // 追加：CompletedHabitテーブルからの習慣
+                'allHabits' => $allHabits, // 追加：両方のテーブルからの習慣
+                'activeHabits' => $activeHabits,
                 'descriptions' => $descriptions,
                 'completedHabitId' => $completedHabitId ?: $sessionCompletedHabitId,
                 'today' => $today
             ]);
         } catch (\Exception $e) {
-            Log::error('Calendar error: ' . $e->getMessage());
-            return back()->withErrors(['date' => 'Invalid date format. Please provide a valid date.']);
+            Log::error('Calendar error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            return back()->withErrors(['date' => 'Invalid date format. Please provide a valid date: ' . $e->getMessage()]);
         }
     }
 
@@ -176,17 +206,31 @@ class CalendarController extends Controller
             return redirect('/login'); // ログインしていない場合はログインページにリダイレクト
         }
 
-        // その月の完了済み習慣データのみを取得
-        $habits = Habit::where('user_id', $user->id)
+        // 1. Habitテーブルから完了済み習慣を取得
+        $habitsFromHabitTable = Habit::where('user_id', $user->id)
             ->whereYear('date', $year)
             ->whereMonth('date', $month)
-            ->where('is_completed', 1) // 完了済みの習慣のみを表示
+            ->where('is_completed', 1)
             ->get();
 
-        // 各 habit の category を配列に格納
+        // 2. CompletedHabitテーブルからも完了済み習慣を取得（追加）
+        $habitsFromCompletedTable = CompletedHabit::where('user_id', $user->id)
+            ->whereYear('completed_date', $year)
+            ->whereMonth('completed_date', $month)
+            ->get();
+
+        // 両方のソースからの習慣をマージ
         $markedHabits = [];
-        foreach ($habits as $habit) {
+
+        // Habitテーブルからの習慣を処理
+        foreach ($habitsFromHabitTable as $habit) {
             $dateStr = $habit->date->format('Y-m-d');
+            $markedHabits[$dateStr][$habit->category] = true;
+        }
+
+        // CompletedHabitテーブルからの習慣を処理（追加）
+        foreach ($habitsFromCompletedTable as $habit) {
+            $dateStr = $habit->completed_date->format('Y-m-d');
             $markedHabits[$dateStr][$habit->category] = true;
         }
 
@@ -196,6 +240,8 @@ class CalendarController extends Controller
             'daysInMonth' => $daysInMonth,
             'startDayOfWeek' => $startDayOfWeek,
             'markedHabits' => $markedHabits,
+            'habitsFromHabitTable' => $habitsFromHabitTable,
+            'habitsFromCompletedTable' => $habitsFromCompletedTable,
         ]);
     }
 
@@ -206,20 +252,66 @@ class CalendarController extends Controller
      */
     public function deleteHabit($id)
     {
-        // 指定されたIDの習慣を取得
-        $habit = Habit::findOrFail($id);
+        try {
+            // IDが 'completed_' で始まる場合はCompletedHabitテーブルから削除
+            if (is_string($id) && strpos($id, 'completed_') === 0) {
+                $completedId = substr($id, 10); // 'completed_' を除いた部分
+                $habit = CompletedHabit::findOrFail($completedId);
 
-        // 権限チェック（自分の習慣のみ削除可能）
-        if ($habit->user_id != Auth::id()) {
+                // 権限チェック
+                if ($habit->user_id != Auth::id()) {
+                    return redirect()->back()
+                        ->with('error', '他のユーザーの習慣は削除できません。');
+                }
+
+                // 習慣を削除
+                $habit->delete();
+                Log::debug("Deleted habit from CompletedHabits - ID: {$completedId}");
+            } else {
+                // 通常のHabitテーブルから削除
+                $habit = Habit::findOrFail($id);
+
+                // 権限チェック
+                if ($habit->user_id != Auth::id()) {
+                    return redirect()->back()
+                        ->with('error', '他のユーザーの習慣は削除できません。');
+                }
+
+                // 習慣を削除
+                $habit->delete();
+                Log::debug("Deleted habit from Habits table - ID: {$id}");
+            }
+
+            // 元のページにリダイレクト
             return redirect()->back()
-                ->with('error', '他のユーザーの習慣は削除できません。');
+                ->with('success', '習慣が削除されました。');
+        } catch (\Exception $e) {
+            Log::error("Error deleting habit: " . $e->getMessage());
+            return redirect()->back()
+                ->with('error', '習慣の削除中にエラーが発生しました: ' . $e->getMessage());
         }
+    }
 
-        // 習慣を削除
-        $habit->delete();
+    /**
+     * カテゴリに基づいて色を決定するヘルパーメソッド（追加）
+     * @param string $category
+     * @return string
+     */
+    private function getCategoryColor($category)
+    {
+        $lowerCategory = strtolower($category);
 
-        // 元のページにリダイレクト
-        return redirect()->back()
-            ->with('success', '習慣が削除されました。');
+        if (strpos($lowerCategory, 'exercise') !== false) {
+            return 'bg-red-400';  // Exerciseは赤
+        } elseif (strpos($lowerCategory, 'nutrition') !== false) {
+            return 'bg-green-400';  // Nutritionは緑
+        } elseif (strpos($lowerCategory, 'sleep') !== false) {
+            return 'bg-blue-400';  // Sleepは青
+        } elseif (strpos($lowerCategory, 'other') !== false) {
+            return 'bg-purple-400';  // Otherは紫
+        } else {
+            // デフォルトの色
+            return 'bg-gray-300';
+        }
     }
 }

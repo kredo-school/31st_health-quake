@@ -16,7 +16,7 @@
         <!-- レベル情報のボックス -->
             <div class="mb-6 text-center">
                 <p class="text-xl text-gray-800">
-                    Youe level : <span class="font-bold text-2xl">{{ $currentLevel }}</span>
+                    Your level : <span class="font-bold text-2xl">{{ $currentLevel }}</span>
                 </p>
             </div>
 
@@ -35,7 +35,7 @@
             @if (!isset($isRewardLevel) || !$isRewardLevel)
                 <div class="text-center mt-2">
                     <p class="text-sm text-gray-600">
-                        @if ($nextRewardLevel > 0)
+                        @if (isset($nextRewardLevel) && $nextRewardLevel > 0)
                             （You will get the bonus in  {{ $nextRewardLevel - $nextLevel }} Level）
                         @endif
                     </p>
@@ -59,11 +59,11 @@
 </div>
 
 <script>
-    レベルが3の倍数の場合、報酬ページにリダイレクト
+    // レベルが3の倍数の場合、報酬ページにリダイレクト
     @if (isset($isRewardLevel) && $isRewardLevel)
         window.location.href = "{{ route('reward.earned', ['level' => $nextLevel]) }}";
     @else
-        // 10秒後に自動的にカレンダー画面へリダイレクト
+        // 6秒後に自動的にカレンダー画面へリダイレクト
         setTimeout(function() {
             window.location.href = "{{ route('calendar.show', ['date' => now()->format('Y-m-d')]) }}";
         }, 6000);

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Habit; // 追加：習慣の完了数をカウントするため
+use App\Models\CompletedHabit; // 追加：CompletedHabitモデルも使用
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -26,10 +27,17 @@ class LevelController extends Controller
             ->where('is_completed', 1)
             ->count();
 
-        Log::debug("User has completed {$completedHabitsCount} habits total");
+        // CompletedHabitテーブルからも完了した習慣を取得（追加）
+        $completedHabitsFromCompletedTable = CompletedHabit::where('user_id', $user->id)
+            ->count();
+
+        // 両方のソースからの完了した習慣の総数を計算
+        $totalCompletedHabits = $completedHabitsCount + $completedHabitsFromCompletedTable;
+
+        Log::debug("User has completed {$totalCompletedHabits} habits total ({$completedHabitsCount} from Habits, {$completedHabitsFromCompletedTable} from CompletedHabits)");
 
         // レベルを計算（5つの習慣ごとに1レベルアップ）
-        $calculatedLevel = (int)($completedHabitsCount / 5) + 1;
+        $calculatedLevel = (int)($totalCompletedHabits / 5) + 1;
 
         // ユーザーのDBモデルにレベルが保存されているか確認
         $hasLevelField = $this->hasLevelField();
@@ -102,15 +110,22 @@ class LevelController extends Controller
         // セッションフラグを更新（次回のため）
         session(['current_level' => $nextLevel]); // 次回のために現在のレベルを保存
 
-        // ビューファイル名はlevel-up.blade.phpを使用
-        return view('level-up', [
-            'currentLevel' => $currentLevel,
-            'nextLevel' => $nextLevel,
-            'today' => $today,
-            'nextRewardLevel' => $nextRewardLevel,
-            'isRewardLevel' => $isRewardLevel,
-            'calendarUrl' => $calendarUrl // カレンダーURLを渡す
-        ]);
+        try {
+            // ビューファイル名を'completed'としてレンダリング
+            return view('completed', [
+                'currentLevel' => $currentLevel,
+                'nextLevel' => $nextLevel,
+                'today' => $today,
+                'nextRewardLevel' => $nextRewardLevel,
+                'isRewardLevel' => $isRewardLevel,
+                'calendarUrl' => $calendarUrl // カレンダーURLを渡す
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Failed to render completed view: " . $e->getMessage());
+
+            // 緊急対応：ビューが見つからない場合はカレンダーにリダイレクト
+            return redirect()->route('calendar.show', ['date' => now()->format('Y-m-d')]);
+        }
     }
 
     /**

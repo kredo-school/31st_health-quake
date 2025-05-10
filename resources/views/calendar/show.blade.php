@@ -8,6 +8,7 @@
     <title>Health Quake - Habit Tracker</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        /* スタイルはそのままで問題ありません */
         body {
             font-family: Arial, sans-serif;
             background-color: #E0F7FA;
@@ -135,45 +136,18 @@
                         @else
                             @php
                                 $dateStr = Carbon::create($year, $month, $dayCounter)->format('Y-m-d');
-
-                                // 日付ごとの習慣を取得
-                                $dayHabits = [];
-                                foreach ($habits as $habit) {
-                                    if (isset($habit->date)) {
-                                        $habitDate = $habit->date instanceof Carbon
-                                            ? $habit->date->format('Y-m-d')
-                                            : Carbon::parse($habit->date)->format('Y-m-d');
-
-                                        if ($habitDate === $dateStr) {
-                                            $color = '';
-                                            if ($habit->category == 'exercise' || $habit->category == 'Exercise Category') {
-                                                $color = 'bg-red-400';
-                                            } elseif ($habit->category == 'nutrition' || $habit->category == 'Nutrition Category') {
-                                                $color = 'bg-green-400';
-                                            } elseif ($habit->category == 'sleep' || $habit->category == 'Sleep Category') {
-                                                $color = 'bg-blue-400';
-                                            } elseif ($habit->category == 'other' || $habit->category == 'Other Categories') {
-                                                $color = 'bg-purple-400';
-                                            } else {
-                                                $color = 'bg-gray-300';
-                                            }
-                                            $dayHabits[] = [
-                                                'name' => $habit->name,
-                                                'color' => $color
-                                            ];
-                                        }
-                                    }
-                                }
+                                $isToday = $dateStr === $today;
                             @endphp
-                            <div class="calendar-cell bg-white">
-                                <span class="date-number">{{$dayCounter}}</span>
+                            <div class="calendar-cell {{ $isToday ? 'bg-blue-50 border-blue-400 border-2' : 'bg-white' }}">
+                                <span class="date-number {{ $isToday ? 'font-bold text-blue-600' : '' }}">{{$dayCounter}}</span>
 
-                                {{-- 日付に関連する習慣を直接表示 --}}
-                                @if (count($dayHabits) > 0)
+                                {{-- 日付に関連する習慣を表示（descriptions配列から） --}}
+                                @if (isset($descriptions[$dateStr]) && count($descriptions[$dateStr]) > 0)
                                     <div class="mt-5 text-xs space-y-1 overflow-y-auto max-h-16">
-                                        @foreach ($dayHabits as $habit)
-                                            <div class="px-1 py-0.5 rounded text-white {{ $habit['color'] }}">
-                                                {{ $habit['name'] }}
+                                        @foreach ($descriptions[$dateStr] as $habit)
+                                            <div class="px-1 py-0.5 rounded text-white {{ $habit['color'] }}"
+                                                 title="{{ $habit['text'] }}">
+                                                {{ $habit['text'] }}
                                             </div>
                                         @endforeach
                                     </div>
@@ -183,8 +157,28 @@
                         @endif
                     @endfor
                 </div>
+
+                {{-- ここからデバッグ情報部分を削除します --}}
+                {{--
+                <div class="mt-8 p-4 bg-gray-100 rounded text-xs">
+                    <h3 class="font-bold mb-2">デバッグ情報</h3>
+                    <p>Habits テーブルからの習慣数: {{ count($habits ?? []) }}</p>
+                    <p>CompletedHabits テーブルからの習慣数: {{ count($completedHabits ?? []) }}</p>
+                    <p>descriptions 配列のエントリー数: {{ count($descriptions ?? []) }}</p>
+
+                    @if(count($completedHabits ?? []) > 0)
+                        <h4 class="font-bold mt-2">CompletedHabits データ：</h4>
+                        <ul class="list-disc pl-5">
+                            @foreach($completedHabits as $habit)
+                                <li>{{ $habit->name }} ({{ $habit->category }}) - {{ $habit->completed_date->format('Y-m-d') }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+                --}}
             </section>
-        </div><Dfn></Dfn>
+        </div>
+    </main>
 </body>
 </html>
 @endsection

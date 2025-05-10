@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Habit;
 use App\Models\UserTask;
+use App\Models\CompletedHabit; // 追加: CompletedHabitモデルのインポート
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -122,10 +123,15 @@ class TimerController extends Controller
         $userId = Auth::id();
         $today = Carbon::now()->toDateString();
 
-        // タイマー関連セッションをクリア（必要な情報は保持）
+        // タイマー関連データを取得
         $habitName = session('habit_name', $request->name);
         $category = session('category', $request->category);
+        $elapsedTime = session('elapsed_time', 0);
+        $date = session('date', Carbon::now()->format('Y-m-d H:i:s'));
 
+        Log::debug("Processing habit - Name: {$habitName}, Category: {$category}, ElapsedTime: {$elapsedTime}");
+
+        // セッションをクリア
         session()->forget([
             'timer_start',
             'timer_duration',
@@ -133,43 +139,70 @@ class TimerController extends Controller
             'is_timer_running'
         ]);
 
-        // UserTaskを完了済みにする
-        $userTask = UserTask::where('user_id', $userId)
-            ->whereHas('task', function ($q) use ($request) {
-                $q->where('name', $request->name);
-            })
-            ->where('is_completed', false)
-            ->orderBy('updated_at', 'desc')
-            ->first();
+        try {
+            // UserTaskを完了済みにする
+            $userTask = UserTask::where('user_id', $userId)
+                ->whereHas('task', function ($q) use ($request) {
+                    $q->where('name', $request->name);
+                })
+                ->where('is_completed', false)
+                ->orderBy('updated_at', 'desc')
+                ->first();
 
-        if ($userTask) {
-            $userTask->is_completed = true;
-            $userTask->last_completed_at = Carbon::now();
-            $userTask->save();
-            Log::debug("User task marked as complete: {$userTask->id}");
-        }
+            if ($userTask) {
+                $userTask->is_completed = true;
+                $userTask->last_completed_at = Carbon::now();
+                $userTask->save();
+                Log::debug("User task marked as complete: {$userTask->id}");
+            }
 
-        // Habitも更新または新規作成
-        $habit = Habit::where('user_id', $userId)
-            ->where('name', $request->name ?: $habitName)
-            ->where('category', $request->category ?: $category)
-            ->first();
+            // Habitも更新または新規作成
+            $habit = Habit::where('user_id', $userId)
+                ->where('name', $request->name ?: $habitName)
+                ->where('category', $request->category ?: $category)
+                ->first();
 
-        if ($habit) {
-            $habit->is_completed = 1;
-            $habit->last_completed = now();
-            $habit->save();
-            Log::debug("Habit updated: {$habit->id}");
-        } else {
-            // Habitが存在しない場合は新規作成
-            $habit = new Habit();
-            $habit->user_id = $userId;
-            $habit->name = $request->name ?: $habitName;
-            $habit->category = $request->category ?: $category;
-            $habit->is_completed = 1;
-            $habit->last_completed = now();
-            $habit->save();
-            Log::debug("New habit created: {$habit->id}");
+            if ($habit) {
+                $habit->is_completed = 1;
+                $habit->last_completed = now();
+                $habit->save();
+                Log::debug("Habit updated: {$habit->id}");
+            } else {
+                // Habitが存在しない場合は新規作成
+                $habit = new Habit();
+                $habit->user_id = $userId;
+                $habit->name = $request->name ?: $habitName;
+                $habit->category = $request->category ?: $category;
+                $habit->date = Carbon::parse($date);
+                $habit->is_completed = 1;
+                $habit->last_completed = now();
+                $habit->save();
+                Log::debug("New habit created: {$habit->id}");
+            }
+
+            // CompletedHabitに記録
+            try {
+                $completedHabit = new CompletedHabit();
+                $completedHabit->user_id = $userId;
+                $completedHabit->name = $request->name ?: $habitName;
+                $completedHabit->category = $request->category ?: $category;
+                $completedHabit->completed_date = Carbon::now()->format('Y-m-d');
+                $completedHabit->duration_seconds = $elapsedTime;
+                $completedHabit->save();
+                Log::debug("CompletedHabit created: {$completedHabit->id}");
+
+                // カレンダー表示用のセッション変数を設定
+                session([
+                    'completed_habit_id' => $completedHabit->id,
+                    'completed_habit_date' => $completedHabit->completed_date,
+                    'completed_habit_name' => $completedHabit->name,
+                    'completed_habit_category' => $completedHabit->category
+                ]);
+            } catch (\Exception $e) {
+                Log::error("Error saving CompletedHabit: " . $e->getMessage());
+            }
+        } catch (\Exception $e) {
+            Log::error("Error processing habit: " . $e->getMessage());
         }
 
         // ユーザーの習慣達成数を更新
@@ -191,41 +224,58 @@ class TimerController extends Controller
             Log::debug("Session habits_completed updated: {$habitsCompleted}");
         }
 
-        // レベルアップ条件をチェック (5回達成ごと)
-        $shouldLevelUp = $habitsCompleted % 5 == 0;
-        Log::debug("Should level up? " . ($shouldLevelUp ? 'Yes' : 'No') . " (habits completed: {$habitsCompleted})");
+        // ここから修正: レベル情報の計算とレベルアップ画面の直接表示
+        // 完了した習慣の総数を取得
+        $completedHabitsCount = Habit::where('user_id', $userId)
+            ->where('is_completed', 1)
+            ->count();
 
-        if ($shouldLevelUp) {
-            // 現在のレベルと次のレベルを計算
-            try {
-                $currentLevel = $user->level ?? 1;
-                $nextLevel = $currentLevel + 1;
+        $completedHabitsFromCompletedTable = CompletedHabit::where('user_id', $userId)
+            ->count();
 
-                // DBにレベルフィールドがある場合は更新
-                $user->level = $nextLevel;
-                $user->save();
-                Log::debug("User level updated: {$currentLevel} -> {$nextLevel}");
-            } catch (\Exception $e) {
-                // DBにlevelフィールドがない場合
-                $currentLevel = session('user_level', 1);
-                $nextLevel = $currentLevel + 1;
-                session(['user_level' => $nextLevel]);
-                Log::debug("Session user_level updated: {$currentLevel} -> {$nextLevel}");
-            }
+        $totalCompletedHabits = $completedHabitsCount + $completedHabitsFromCompletedTable;
 
-            // レベル情報をセッションに保存（LevelControllerでの表示用）
-            session(['current_level' => $currentLevel]);
-            session(['next_level' => $nextLevel]);
-            session(['level_up_needed' => true]);
+        // レベルを計算（5つの習慣ごとに1レベルアップ）
+        $calculatedLevel = (int)($totalCompletedHabits / 5) + 1;
 
-            Log::debug("Redirecting to level.up route");
-
-            // 強制的にレベルアップ画面へリダイレクト
-            return redirect()->route('level.up');
+        // 現在のレベルを取得
+        try {
+            $currentLevel = $user->level ?? 1;
+        } catch (\Exception $e) {
+            $currentLevel = session('user_level', 1);
         }
 
-        Log::debug("Redirecting to calendar.show route with date: {$today}");
-        // 常にレベルアップ画面へリダイレクト（条件に関わらず）
-        return redirect()->route('level.up');
+        // レベルアップするか決定
+        $nextLevel = $currentLevel;
+        if ($calculatedLevel > $currentLevel) {
+            $nextLevel = $calculatedLevel;
+            // DBまたはセッションを更新
+            try {
+                $user->level = $nextLevel;
+                $user->save();
+            } catch (\Exception $e) {
+                session(['user_level' => $nextLevel]);
+            }
+        } else {
+            $nextLevel = $currentLevel + 1;
+        }
+
+        // 報酬レベルの計算
+        $isRewardLevel = ($nextLevel % 3 == 0);
+        $nextRewardLevel = ceil($nextLevel / 3) * 3;
+
+        // セッションに保存（次回のために）
+        session(['current_level' => $currentLevel]);
+        session(['next_level' => $nextLevel]);
+
+        Log::debug("Rendering completed view directly - Current: {$currentLevel}, Next: {$nextLevel}, IsReward: " . ($isRewardLevel ? 'Yes' : 'No'));
+
+        // 重要: redirectではなく直接ビューをレンダリング
+        return view('completed', [
+            'currentLevel' => $currentLevel,
+            'nextLevel' => $nextLevel,
+            'isRewardLevel' => $isRewardLevel,
+            'nextRewardLevel' => $nextRewardLevel
+        ]);
     }
 }

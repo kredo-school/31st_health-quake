@@ -4,30 +4,34 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCompletionColumnsToHabitsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
+        // カラムが存在するかチェックしてから追加
         Schema::table('habits', function (Blueprint $table) {
-            $table->boolean('is_completed')->default(false);
-            $table->timestamp('last_completed')->nullable();
+            if (!Schema::hasColumn('habits', 'is_completed')) {
+                $table->boolean('is_completed')->default(false);
+            }
+            // 他のカラムも同様に
+            // if (!Schema::hasColumn('habits', '他のカラム名')) {
+            //     $table->カラム型('他のカラム名')->デフォルト値();
+            // }
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('habits', function (Blueprint $table) {
-            $table->dropColumn(['is_completed', 'last_completed']);
-        });
+        // ここではカラムを削除する場合の処理を記述
+        // 注意：このマイグレーションで追加したカラムのみを削除
+        // Schema::table('habits', function (Blueprint $table) {
+        //     $table->dropColumn('is_completed');
+        // });
     }
-}
+};
