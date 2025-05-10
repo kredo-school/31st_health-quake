@@ -47,19 +47,13 @@
                     </a>
 
                     <!-- ログアウトボタン -->
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="text-gray-600 hover:text-gray-800">
-                            Log out
-                        </button>
-                    </form>
-                    <!-- 管理者ボタン-->
-                    <form method="GET" action="{{ route('admin.dashboard') }}">
-                        @csrf
-                        <button type="submit" class="text-gray-600 hover:text-gray-800">
-                            Admin Page
-                        </button>
-                    </form>
+                    <div class="flex items-center space-x-4">
+                
+                <a href="{{ route('logout') }}" class="text-gray-600 hover:text-gray-800">Log out</a>
+                <span class="text-gray-400">|</span>
+                <a href="{{ route('admin.dashboard')}}" class="text-gray-600 hover:text-gray-800">Admin Page</a>
+            </div>
+                    
                 
                 @else
                     <!-- ログイン・登録リンク（未ログイン時） -->
