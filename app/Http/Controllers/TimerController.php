@@ -271,7 +271,7 @@ class TimerController extends Controller
         Log::debug("Rendering completed view directly - Current: {$currentLevel}, Next: {$nextLevel}, IsReward: " . ($isRewardLevel ? 'Yes' : 'No'));
 
         // 重要: redirectではなく直接ビューをレンダリング
-        return view('completed', [
+        return view('level-up', [
             'currentLevel' => $currentLevel,
             'nextLevel' => $nextLevel,
             'isRewardLevel' => $isRewardLevel,

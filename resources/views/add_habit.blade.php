@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('styles')
-<style>
+{{-- <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #E0F7FA;
@@ -24,7 +24,7 @@
         .modal-visible {
             display: flex !important;
         }
-    </style>
+    </style> --}}
 @endsection
 @section('content')
 
@@ -96,7 +96,7 @@
             <div class="bg-pink-200 rounded-lg p-2 shadow">
                 <img src="{{ asset('images/glass_of_water.png') }}" alt="Glass of water" class="rounded mb-2">Drink water<p class="text-center font-semibold"></p>
             </div>
-            <div class="bg-green-200 rounded-lg p-2 shadow">
+            <div class="bg-green-100 rounded-lg p-2 shadow">
                 <img src="{{ asset('images/get_outside.jpg') }}" alt="Get outside" class="rounded mb-2">
                 Get outside<p class="text-center font-semibold"></p>
             </div>

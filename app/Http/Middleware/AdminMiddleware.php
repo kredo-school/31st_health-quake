@@ -23,6 +23,6 @@ class AdminMiddleware
         }
 
         // 許可されていない場合はリダイレクト
-        return redirect('/')->with('error', 'このページにアクセスする権限がありません。');
+        return redirect('/')->with('error', 'You do not have permission to access this page.');
     }
 }
