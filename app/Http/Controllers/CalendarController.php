@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use App\Models\Habit; // Habitモデルをインポート
+use App\Models\Habit; // Habitモデルをインポート 
 use App\Models\CompletedHabit; // CompletedHabitモデルをインポート
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log; 
 
 class CalendarController extends Controller
 {
@@ -61,7 +61,7 @@ class CalendarController extends Controller
 
             // 日付ごとの説明文を生成
             $descriptions = $this->buildDescriptions(
-                $habitsData['habitsFromHabitTable'],
+                // $habitsData['habitsFromHabitTable'],
                 $habitsData['habitsFromCompletedTable']
             );
 
@@ -70,7 +70,7 @@ class CalendarController extends Controller
                 'year' => $year,
                 'month' => $month,
                 'startDayOfWeek' => $parsedDate->startOfMonth()->dayOfWeek,
-                'habits' => $habitsData['habitsFromHabitTable'],
+                // 'habits' => $habitsData['habitsFromHabitTable'],
                 'completedHabits' => $habitsData['habitsFromCompletedTable'],
                 'activeHabits' => $activeHabits,
                 'descriptions' => $descriptions,
@@ -79,7 +79,7 @@ class CalendarController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error("Error in CalendarController: " . $e->getMessage());
-            return back()->withErrors(['general' => '予期しないエラーが発生しました。']);
+            return back()->withErrors(['general' => 'ERROR']);
         }
     }
 
@@ -122,7 +122,7 @@ class CalendarController extends Controller
             'daysInMonth' => $daysInMonth,
             'startDayOfWeek' => $startDayOfWeek,
             'markedHabits' => $markedHabits,
-            'habitsFromHabitTable' => $habitsData['habitsFromHabitTable'],
+            // 'habitsFromHabitTable' => $habitsData['habitsFromHabitTable'],
             'habitsFromCompletedTable' => $habitsData['habitsFromCompletedTable'],
         ]);
     }
@@ -144,14 +144,14 @@ class CalendarController extends Controller
 
             // 権限チェック
             if ($habit->user_id != Auth::id()) {
-                return redirect()->back()->with('error', '他のユーザーの習慣は削除できません。');
+                return redirect()->back()->with('error', 'You do not have permission to delete this habit.');
             }
 
             $habit->delete();
-            return redirect()->back()->with('success', '習慣が削除されました。');
+            return redirect()->back()->with('success', 'Deleted successfully!');
         } catch (\Exception $e) {
             Log::error("Error deleting habit: " . $e->getMessage());
-            return redirect()->back()->with('error', '習慣の削除中にエラーが発生しました。');
+            return redirect()->back()->with('error', 'Error deleting habit.');
         }
     }
 
@@ -174,11 +174,11 @@ class CalendarController extends Controller
      */
     private function fetchHabitsForMonth($userId, $year, $month)
     {
-        $habitsFromHabitTable = Habit::where('user_id', $userId)
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->where('is_completed', 1)
-            ->get();
+        // $habitsFromHabitTable = Habit::where('user_id', $userId)
+        //     ->whereYear('date', $year)
+        //     ->whereMonth('date', $month)
+        //     ->where('is_completed', 1)
+        //     ->get();
 
         $habitsFromCompletedTable = CompletedHabit::where('user_id', $userId)
             ->whereYear('completed_date', $year)
@@ -186,7 +186,7 @@ class CalendarController extends Controller
             ->get();
 
         return [
-            'habitsFromHabitTable' => $habitsFromHabitTable,
+            // 'habitsFromHabitTable' => $habitsFromHabitTable,
             'habitsFromCompletedTable' => $habitsFromCompletedTable,
         ];
     }
@@ -213,14 +213,14 @@ class CalendarController extends Controller
      * @param mixed $habitsFromCompletedTable
      * @return array
      */
-    private function buildDescriptions($habitsFromHabitTable, $habitsFromCompletedTable)
+    private function buildDescriptions( $habitsFromCompletedTable)
     {
         $descriptions = [];
 
-        foreach ($habitsFromHabitTable as $habit) {
-            $dateStr = $habit->date->format('Y-m-d');
-            $this->addDescription($descriptions, $dateStr, $habit, 'habits');
-        }
+        // foreach ($habitsFromHabitTable as $habit) {
+        //     $dateStr = $habit->date->format('Y-m-d');
+        //     $this->addDescription($descriptions, $dateStr, $habit, 'habits');
+        // }
 
         foreach ($habitsFromCompletedTable as $habit) {
             $dateStr = $habit->completed_date->format('Y-m-d');
