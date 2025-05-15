@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
-    <div class="container">
+    <div class="container text-light">
         <h1>We are what we repeatedly do. 
             Excellence, then, is not an act, but a habit.
             </h1>

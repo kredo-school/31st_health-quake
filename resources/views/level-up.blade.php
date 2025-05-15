@@ -59,7 +59,7 @@
     </div>
 </div>
 
-<script>
+{{-- <script>
     // レベルが3の倍数の場合、報酬ページにリダイレクト
     @if (isset($isRewardLevel) && $isRewardLevel)
         window.location.href = "{{ route('reward.earned', ['level' => $nextLevel]) }}";
@@ -69,5 +69,5 @@
             window.location.href = "{{ route('calendar.show', ['date' => now()->format('Y-m-d')]) }}";
         }, 6000);
     @endif
-</script>
+</script> --}}
 @endsection

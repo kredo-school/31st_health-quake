@@ -77,11 +77,16 @@ class LevelController extends Controller
         // 現在のレベルと次のレベルを設定
         $currentLevel = $previousLevel;
         $nextLevel = $calculatedLevel;
-
+// $dd($currentLevel, $nextLevel);
         // もしレベルアップがなければ（前回と同じレベル）
-        if ($currentLevel >= $nextLevel) {
+        // if ($currentLevel >= $nextLevel) {
             $nextLevel = $currentLevel + 1;
-        }
+            $user->level = $nextLevel; // DBに保存
+            $user->save();
+            
+            session(['current_level' => $currentLevel]);
+            session(['next_level' => $nextLevel]);
+        // }
 
         Log::debug("Level values set - currentLevel: {$currentLevel}, nextLevel: {$nextLevel}");
 

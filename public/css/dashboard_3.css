@@ -2,7 +2,8 @@ body {
     background-image: url('/images/background_3.png');/* 背景画像のパスを指定 */
             background-size: cover;
             background-position: center;
-            color: white;
+            background-color: dark;
+            color: dark;
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
