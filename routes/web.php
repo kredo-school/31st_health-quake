@@ -150,9 +150,13 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/users/update/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update'); // 更新処理
     Route::delete('/users/destroy/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy'); // 削除処理
 
-    // ログインペナルティ設定
-    Route::get('/login_penalties', [AdminController::class, 'loginPenalties'])->name('admin.login_penalties');
-    Route::post('/login_penalties/update', [AdminController::class, 'updateLoginPenalties'])->name('admin.login_penalties.update');
+    // // ログインペナルティ設定
+    // Route::get('/login_penalties', [AdminController::class, 'loginPenalties'])->name('admin.login_penalties');
+    // Route::post('/login_penalties/update', [AdminController::class, 'updateLoginPenalties'])->name('admin.login_penalties.update');
+    Route::get('/penalty', [PenaltyController::class, 'show'])->name('penalty.show');
+
+    //ログインボーナス設定
+    Route::get('/bonus', [BonusController::class, 'showPaper'])->name('bonus.show');
 
     // カテゴリ管理
     Route::get('/categories', [AdminController::class, 'categories'])->name('admin.categories');
