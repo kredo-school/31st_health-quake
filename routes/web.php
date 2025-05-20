@@ -151,8 +151,8 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::delete('/users/destroy/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy'); // 削除処理
 
     // // ログインペナルティ設定
-    // Route::get('/login_penalties', [AdminController::class, 'loginPenalties'])->name('admin.login_penalties');
-    // Route::post('/login_penalties/update', [AdminController::class, 'updateLoginPenalties'])->name('admin.login_penalties.update');
+    Route::get('/login_penalties', [AdminController::class, 'loginPenalties'])->name('admin.login_penalties');
+    Route::post('/login_penalties/update', [AdminController::class, 'updateLoginPenalties'])->name('admin.login_penalties.update');
     Route::get('/penalty', [PenaltyController::class, 'show'])->name('penalty.show');
 
     //ログインボーナス設定
