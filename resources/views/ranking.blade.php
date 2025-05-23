@@ -2,21 +2,26 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-blue-100 min-h-screen pt-24">
+<style>
+   main {
+        margin-top: 100px;
+    }
+</style>
+<div class="min-h-screen pt-24">
     <!-- Main contents -->
     <main class="max-w-3xl mx-auto p-5 pt-8">
        
         <!-- Ranking Tabs -->
-        <div class="flex justify-center mb-6">
+        {{-- <div class="flex justify-center mb-6">
             <div class="inline-flex rounded-md shadow-sm bg-white" role="group">
-                @foreach (['level' => 'Level', 'weekly' => 'Weekly', 'monthly' => 'Monthly'] as $key => $label)
+                @foreach (['level' => 'Level'] as $key => $label)
                     <a href="{{ route('ranking', ['type' => $key]) }}"
                        class="px-6 py-2.5 text-sm font-medium {{ $key === 'level' ? 'rounded-l-lg' : ($key === 'monthly' ? 'rounded-r-lg' : '') }} {{ $type === $key ? 'bg-green-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100' }}">
                         {{ $label }}
                     </a>
                 @endforeach
             </div>
-        </div>
+        </div> --}}
 
         <!-- Ranking Title -->
         <h2 class="text-xl font-bold text-center mb-6 text-gray-800">{{ $rankingTitle ?? 'Ranking' }}</h2>
